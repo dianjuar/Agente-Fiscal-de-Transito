@@ -15,9 +15,6 @@ MyCanvas::MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size):
     rvo  = new RVO_Manager(globalTime, maxVelocity);
 
     aManager = new agents::agentManager(this);
-
-    /*connect( rvo, SIGNAL(agentsHaveReachedTheirGoal()),
-             aManager, SLOT(buildDiferencialAgentsPath()));*/
 }
 
 void MyCanvas::OnInit()
@@ -60,64 +57,32 @@ void MyCanvas::draw()
 
     for(auto *agente : aManager->agentes)
         agente->draw(this);
-
-
-
-    /*if(rvo->haveReachedTheirGoal)
-            drawCleanSteps();*/
-
-    /*for(entornoGrafico::obstaculo obst:mapa->obstaculos)
-        for (int i = 0; i <= numeroDeArista; ++i)
-        {
-            sf::CircleShape c;
-            c.setRadius(4);
-            c.setFillColor( sf::Color::White );
-            c.setPosition( obst.getPoint_RVO().at(i).x(), obst.getPoint_RVO().at(i).y() );
-            c.setOrigin(4,4);
-            this->RenderWindow::draw(c);
-        }*/
 }
 
 void MyCanvas::update(float deltaTime, float currentTime)
 {   
-    if( !rvo->haveReachedTheirGoal /*&& currentTime >= rvo->sim->getTimeStep()/100.f*/)
+
+    rvo->updateVisualization(aManager->agentes);
+    //this->reset_currentTime();
+
+    float delay = (rvo->sim->getGlobalTime()/100.f)-currentTime;
+    QThread::sleep( delay < 0 ? 0:delay );
+
+
+    if( rvo->haveReachedTheirGoal )
     {
-        tiempoTranscurrido += currentTime;
-
-        if(!printed_V_MIN_MAX)
-        {
-            printed_V_MIN_MAX = !printed_V_MIN_MAX;
-            this->reset_currentTime();
-        }
-
-        rvo->updateVisualization(aManager->agentes,false);
-        qDebug()<<"Time RVO:"<<rvo->sim->getGlobalTime()/100<<"       Time real"<<tiempoTranscurrido;
-
-        this->reset_currentTime();
+        qDebug()<<"Time RVO:"<<rvo->sim->getGlobalTime()/100<<"       Time real"<<currentTime+delay;
+        exit(EXIT_SUCCESS);
     }
-    /*else
-    {
-        if(!printed_V_MIN_MAX)
-        {
-            int nAgente=0;
-            foreach (agents::agent *a, aManager->agentes)
-            {
-               // qDebug()<<"**************************";
-                qDebug()<<"Agente Nº"<<nAgente++;
-                qDebug()<<"VL_MIN"<<a->vL_MIN<<"VR_MIN"<<a->vR_MIN;
-                qDebug()<<"VL_MAX"<<a->vL_MAX<<"VR_MAX"<<a->vL_MAX;
-            }
-            printed_V_MIN_MAX = !printed_V_MIN_MAX;
-        }
-    }*/
+
 }
 
 void MyCanvas::setup_agentes()
 {
     agents::agent *a1 = new agents::agent( sf::Vector2f( 0,
-                                                         2),
-                                           sf::Vector2f( 1,
-                                                         2),
+                                                         1),
+                                           sf::Vector2f( 2,
+                                                         1),
                                            mapa->spriteSize,
                                            radioScaled, zonaSeguraScaled,
                                            0.f,
@@ -127,8 +92,8 @@ void MyCanvas::setup_agentes()
 
     //agente 2
     agents::agent *a2 = new agents::agent( sf::Vector2f( 1,
-                                                         2),
-                                           sf::Vector2f( 0,
+                                                         0),
+                                           sf::Vector2f( 1,
                                                          2),
                                            mapa->spriteSize,
                                            radioScaled, zonaSeguraScaled,

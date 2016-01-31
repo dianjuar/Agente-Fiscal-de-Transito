@@ -9,8 +9,6 @@
 #include "headers/opencv_stuff.h"
 #include "Tools/math.h"
 #include "mycanvas.h"
-#include "Agentes/agentpath.h"
-#include "Agentes/dirystep.h"
 
 class MyCanvas;
 
@@ -21,9 +19,6 @@ class agentPath;
 class agent: public sf::CircleShape
 {
     sf::Color ballColor;
-
-    std::vector< diryStep* > dirtySteps;
-
     float oring;
 
     float tetaOriginal;
@@ -31,7 +26,7 @@ class agent: public sf::CircleShape
 
 
     void calculateVL(RVO::Vector2 velocity);
-    void calculateTeta(RVO::Vector2 v);
+    void calculateTeta(float timeStep);
 
 public:
     static float radius;
@@ -63,8 +58,7 @@ public:
     sf::Vector2f get_goal();
     RVO::Vector2 get_goal_RVO();
 
-    void addDirtyStep(diryStep *step , float timeStep);
-    std::vector<diryStep *> getDirtySteps();
+    void calculateVelocities(RVO::Vector2 position, RVO::Vector2 velocity , float timeStep);
 
     float getRadioCompleto();
 

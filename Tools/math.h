@@ -7,7 +7,6 @@
 #include "headers/opencv_stuff.h"
 
 #include "Tools/sfml.h"
-#include "Agentes/agentpath.h"
 #include "entornografico.h"
 #include "math.h"
 

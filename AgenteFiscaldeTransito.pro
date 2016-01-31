@@ -22,9 +22,7 @@ SOURCES += main.cpp\
     entornografico.cpp \
     Tools/math.cpp \
     Agentes/agentmanager.cpp \
-    Agentes/agent.cpp \
-    Agentes/agentpath.cpp \
-    Agentes/dirystep.cpp
+    Agentes/agent.cpp
 
 HEADERS  += mainwindow.h \
     qsfmlcanvas.h \
@@ -39,8 +37,6 @@ HEADERS  += mainwindow.h \
     Tools/math.h \
     Agentes/agentmanager.h \
     Agentes/agent.h \
-    Agentes/agentpath.h \
-    Agentes/dirystep.h \
     headers/opencv_stuff.h
 
 FORMS    += mainwindow.ui

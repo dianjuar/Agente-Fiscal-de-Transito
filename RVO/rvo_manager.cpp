@@ -38,7 +38,7 @@ RVO_Manager::RVO_Manager(float radius,
 
 //este es el que estoy usando
 RVO_Manager::RVO_Manager(float globalTime, float maxVelocity):
-    maxAgents(3),
+    maxAgents(1),
     timeHorizon(5),
     timeHorizonObst(5),
     haveReachedTheirGoal(false)
@@ -79,41 +79,24 @@ void RVO_Manager::setupScenario(float radius, std::vector<agents::agent *> agent
     add_agentes(agentes);
 }
 
-void RVO_Manager::updateVisualization(std::vector<agents::agent *> &agentes , bool printInformation)
+void RVO_Manager::updateVisualization(std::vector<agents::agent *> &agentes)
 {
     if(!reachedGoal(agentes))
     {
         //if(printInformation) qDebug()<< "Agentes **Inicio**-------------";
 
-        for (size_t i = 0; i < sim->getNumAgents(); ++i)
-        {
-            agents::agent *a = agentes.at(i);
-            a->addDirtyStep( new agents::diryStep(sim->getAgentPosition(i),
-                                                  sim->getAgentVelocity(i),
-                                                  sim->getGlobalTime(),
-                                                  a->getDirtySteps().size() ),
-                             sim->getTimeStep());
-
-            /*if(printInformation)
-            {
-                qDebug()<<"A"+QString::number(i)+": x - "+
-                          QString::number(a->getPosition().x)+"   y - "+QString::number(a->getPosition().y)+
-                          "   Goal x:"+QString::number(a->get_goal().x)+" - y:"+QString::number(a->get_goal().y);
-
-                qDebug()<<"Time: Global->"<<sim->getTimeStep()<<"   -   "<<sim->getGlobalTime();
-                qDebug()<<"Velocity: x:"<<sim->getAgentVelocity(i).x()<<"y:"<<sim->getAgentVelocity(i).y();
-            }*/
-        }
 
         //if(printInformation) qDebug()<< "Agentes **Fin**-------------" ;
+
+        for (size_t i = 0; i < sim->getNumAgents(); ++i)
+            agentes.at(i)->calculateVelocities( sim->getAgentPosition(i),
+                                                sim->getAgentVelocity(i),
+                                                sim->getTimeStep());
 
         setPreferredVelocities(agentes);
 
         sim->doStep();
     }
-
-
-
 }
 
 bool RVO_Manager::reachedGoal(std::vector<agents::agent *> &agentes)

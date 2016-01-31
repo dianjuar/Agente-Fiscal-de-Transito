@@ -88,26 +88,20 @@ RVO::Vector2 agent::get_goal_RVO()
     return RVO::Vector2( posGoal.x, posGoal.y );
 }
 
-std::vector<diryStep*> agent::getDirtySteps()
-{
-    return dirtySteps;
-}
-
 float agent::getRadioCompleto()
 {
     return radius+zonaSegura;
 }
 
-void agent::addDirtyStep(diryStep *step, float timeStep)
-{
-    dirtySteps.push_back(step);
-
-    calculateVL(step->velocity);
-    calculateTeta(step->velocity);
+void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
+                                float timeStep)
+{ 
+    calculateVL(velocity);
+    calculateTeta(timeStep);
     calculateP();
-    qDebug()<<"***********************";
+    //qDebug()<<"***********************";
 
-    setPosition( step->position.x(), step->position.y()  );
+    setPosition( position.x(), position.y()  );
 }
 
 void agent::calculateP()
@@ -155,7 +149,7 @@ void agent::calculateVL(RVO::Vector2 velocity)
     vL = u.at<float>(0,0);
     vR = u.at<float>(1,0);
 
-    if(vL > vL_MAX)
+   /* if(vL > vL_MAX)
         vL_MAX = vL;
     if(vR > vR_MAX)
         vR_MAX = vR;
@@ -168,16 +162,16 @@ void agent::calculateVL(RVO::Vector2 velocity)
     //vL = ( velocity.x()*( cos(teta*M_PI/180) + sin(teta*M_PI/180) ) )/denominador;
     //vR = ( velocity.y()*( cos(teta*M_PI/180) + sin(teta*M_PI/180) ) )/denominador;
 
-    qDebug()<<"VL:"<<vL<<"   VR:"<<vR;
+    qDebug()<<"VL:"<<vL<<"   VR:"<<vR;*/
 }
 
-void agent::calculateTeta(RVO::Vector2 v)
+void agent::calculateTeta(float timeStep)
 {
   /* float w;
    w = v.x() == 0 ? 0:atan(v.y()/v.x())*180/M_PI;
    //teta = w;*/
 
-   teta = teta - ((vL-vR)/L)*100;
+   teta = teta - ((vL-vR)/L)*(timeStep*100);
 
 }
 

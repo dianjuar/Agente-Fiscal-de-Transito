@@ -46,7 +46,7 @@ public:
 
     void setupScenario(float radius, std::vector<agents::agent*> agentes, std::vector<entornoGrafico::obstaculo> listaObst);
 
-    void updateVisualization(std::vector<agents::agent *> &agentes, bool printInformation = false);
+    void updateVisualization(std::vector<agents::agent *> &agentes);
     void setPreferredVelocities(std::vector<agents::agent*> agentes);
 private:
     bool reachedGoal(std::vector<agents::agent*> &agentes);
