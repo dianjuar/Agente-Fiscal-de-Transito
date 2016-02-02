@@ -25,13 +25,19 @@ class RVO_Manager: public QObject
     float maxAgents;
     float timeHorizon;
     float timeHorizonObst;
-    float globalTime;
+    float timeStep;
     float maxSpeed;
 
 signals:
     //void agentsHaveReachedTheirGoal();
 
 public:
+
+    ///
+    /// \brief Time step de la simulación basado en segundos.
+    ///
+    static float TimeStep_real;
+
     RVO::RVOSimulator *sim;
 
     bool haveReachedTheirGoal;
@@ -39,7 +45,7 @@ public:
     RVO_Manager(RVO::RVOSimulator *sim);
     RVO_Manager(float radius, std::vector<agents::agent*> agentes,
                 std::vector<entornoGrafico::obstaculo> listaObst);
-    RVO_Manager(float globalTime, float maxVelocity);
+    RVO_Manager(float timeStep, float maxVelocity);
 
     void add_obstacles( std::vector<entornoGrafico::obstaculo> listaObst );
     void add_agentes(std::vector< agents::agent* > agentes );

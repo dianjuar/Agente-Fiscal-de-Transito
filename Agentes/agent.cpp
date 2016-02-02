@@ -8,12 +8,12 @@ float agent::zonaSegura = 0;
 agent::agent(const sf::Vector2f posIni, sf::Vector2f posGoal,
                float spriteSize,
                float agentRadius, float zonaSeguraScaled, float tetaInicial,
+               float D, float L,
                sf::Color color):
                 teta(tetaInicial),
                 ballColor(color),
-                D(agentRadius), L(2*agentRadius),
-                vL(0), vR(0),
-                vR_MAX(-999),vL_MAX(-999), vL_MIN(999),vR_MIN(999)
+                D(D), L(L),
+                vL(0), vR(0)
 {
     this->radius = agentRadius;
     this->zonaSegura = zonaSeguraScaled;
@@ -110,7 +110,6 @@ void agent::calculateP()
                       getPosition().y + D*(sin(teta*(M_PI/180))));
 
     p_grap.setPosition( P );
-
 }
 
 void agent::calculateVL(RVO::Vector2 velocity)
@@ -149,20 +148,9 @@ void agent::calculateVL(RVO::Vector2 velocity)
     vL = u.at<float>(0,0);
     vR = u.at<float>(1,0);
 
-   /* if(vL > vL_MAX)
-        vL_MAX = vL;
-    if(vR > vR_MAX)
-        vR_MAX = vR;
+    vL_real = vL/RVO_Manager::TimeStep_real;
+    vR_real = vR/RVO_Manager::TimeStep_real;
 
-    if(vL < vL_MIN)
-        vL_MIN = vL;
-    if(vR < vR_MIN)
-        vR_MIN = vR;
-
-    //vL = ( velocity.x()*( cos(teta*M_PI/180) + sin(teta*M_PI/180) ) )/denominador;
-    //vR = ( velocity.y()*( cos(teta*M_PI/180) + sin(teta*M_PI/180) ) )/denominador;
-
-    qDebug()<<"VL:"<<vL<<"   VR:"<<vR;*/
 }
 
 void agent::calculateTeta(float timeStep)

@@ -6,12 +6,12 @@ MyCanvas::MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size):
     printed_V_MIN_MAX(false),
     tiempoTranscurrido(0)
 {
-    map_longitudPorCuadro_REAL = 10.f;
-    radioReal = 2.5f;
+    map_longitudPorCuadro_REAL = 22.02271f;
+    radioReal = 13.5f;
     zonaSeguraReal = 0.5f;
 
-    float globalTime = 0.1;
-    float maxVelocity = 10.f;
+    float globalTime = 3;
+    float maxVelocity = 0.05f;
     rvo  = new RVO_Manager(globalTime, maxVelocity);
 
     aManager = new agents::agentManager(this);
@@ -31,11 +31,14 @@ void MyCanvas::OnInit()
 
     setBackgroudColor(sf::Color::Black);
 
-    QString map_Str = "00000\n"
-                      "00000\n"
-                      "00000\n"
-                      "00000\n"
-                      "00000";
+    QString map_Str = "11111111\n"
+                      "10000001\n"
+                      "10000001\n"
+                      "10000001\n"
+                      "10000001\n"
+                      "10000001\n"
+                      "10000001\n"
+                      "11111111";
 
     mapa = new entornoGrafico::mapa( map_Str,
                                      map_longitudPorCuadro_REAL,
@@ -61,45 +64,51 @@ void MyCanvas::draw()
 
 void MyCanvas::update(float deltaTime, float currentTime)
 {   
-
     rvo->updateVisualization(aManager->agentes);
-    //this->reset_currentTime();
 
     float delay = (rvo->sim->getGlobalTime()/100.f)-currentTime;
     QThread::sleep( delay < 0 ? 0:delay );
-
 
     if( rvo->haveReachedTheirGoal )
     {
         qDebug()<<"Time RVO:"<<rvo->sim->getGlobalTime()/100<<"       Time real"<<currentTime+delay;
         exit(EXIT_SUCCESS);
     }
-
 }
 
 void MyCanvas::setup_agentes()
 {
-    agents::agent *a1 = new agents::agent( sf::Vector2f( 0,
-                                                         1),
-                                           sf::Vector2f( 2,
-                                                         1),
+    float D,L;
+
+    D = radioScaled;
+    L = mapa->medidaReal2Pixel(11.35f);
+
+
+
+
+    agents::agent *a1 = new agents::agent( sf::Vector2f( 2,
+                                                         3),
+                                           sf::Vector2f( 5,
+                                                         3),
                                            mapa->spriteSize,
                                            radioScaled, zonaSeguraScaled,
                                            0.f,
+                                           D, L,
                                            sf::Color::Red);
     aManager->addAgent(a1);
 
 
     //agente 2
-    agents::agent *a2 = new agents::agent( sf::Vector2f( 1,
-                                                         0),
-                                           sf::Vector2f( 1,
+   /* agents::agent *a2 = new agents::agent( sf::Vector2f( 3,
                                                          2),
+                                           sf::Vector2f( 3,
+                                                         5),
                                            mapa->spriteSize,
                                            radioScaled, zonaSeguraScaled,
-                                           180,
+                                           90,
+                                           D, L,
                                            sf::Color::Magenta);
-    aManager->addAgent(a2);
+    aManager->addAgent(a2);*/
 
     //agente 3
    /* agents::agent *a3 = new agents::agent( sf::Vector2f( 4,

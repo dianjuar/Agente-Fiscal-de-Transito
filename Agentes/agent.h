@@ -36,8 +36,7 @@ public:
     float L;
 
     float vL,vR;
-    float vL_MAX,vR_MAX;
-    float vL_MIN,vR_MIN;
+    float vL_real, vR_real;
 
     sf::Vector2f P;
 
@@ -50,7 +49,7 @@ public:
 
     agent(sf::Vector2f const posIni, sf::Vector2f posGoal,
            float spriteSize,
-           float radius = 10.f, float zonaSegura = 0.f, float tetaInicial = 0.0f,
+           float radius = 10.f, float zonaSegura = 0.f, float tetaInicial = 0.0f, float D=10.f, float L=20.f,
            sf::Color color = sf::Color::Red);
 
     void updateLineTrayectoria();

@@ -1,9 +1,12 @@
 #include "rvo_manager.h"
+
+float RVO_Manager::TimeStep_real = 0;
+
 RVO_Manager::RVO_Manager(RVO::RVOSimulator *sim):
     maxAgents(3),
     timeHorizon(5),
     timeHorizonObst(5),
-    globalTime(0.2),
+    timeStep(0.2),
     maxSpeed(2.f)
 {
     this->sim = sim;
@@ -15,14 +18,14 @@ RVO_Manager::RVO_Manager(float radius,
                             maxAgents(3),
                             timeHorizon(5),
                             timeHorizonObst(5),
-                            globalTime(0.1),
+                            timeStep(0.1),
                             maxSpeed(0.01f),
                             haveReachedTheirGoal(false)
 {
     sim = new RVO::RVOSimulator();
 
     /* Specify the global time step of the simulation. */
-    sim->setTimeStep(globalTime);
+    sim->setTimeStep(timeStep);
 
     /* Specify the default parameters for agents that are subsequently added. */
     sim->setAgentDefaults( radius*2,
@@ -37,15 +40,18 @@ RVO_Manager::RVO_Manager(float radius,
 
 
 //este es el que estoy usando
-RVO_Manager::RVO_Manager(float globalTime, float maxVelocity):
+RVO_Manager::RVO_Manager(float timeStep, float maxVelocity):
     maxAgents(1),
     timeHorizon(5),
     timeHorizonObst(5),
     haveReachedTheirGoal(false)
 {
-    this->globalTime = globalTime;
+    this->timeStep = timeStep;
     maxSpeed = maxVelocity;
     sim = new RVO::RVOSimulator();
+
+    TimeStep_real = timeStep/100;
+
 }
 
 void RVO_Manager::add_obstacles(std::vector<entornoGrafico::obstaculo> listaObst)
@@ -66,7 +72,7 @@ void RVO_Manager::setupScenario(float radius, std::vector<agents::agent *> agent
                                 std::vector<entornoGrafico::obstaculo> listaObst)
 {
     /* Specify the global time step of the simulation. */
-    sim->setTimeStep(globalTime);
+    sim->setTimeStep(timeStep);
 
     /* Specify the default parameters for agents that are subsequently added. */
     sim->setAgentDefaults( radius*(750/100),
@@ -83,15 +89,10 @@ void RVO_Manager::updateVisualization(std::vector<agents::agent *> &agentes)
 {
     if(!reachedGoal(agentes))
     {
-        //if(printInformation) qDebug()<< "Agentes **Inicio**-------------";
-
-
-        //if(printInformation) qDebug()<< "Agentes **Fin**-------------" ;
-
         for (size_t i = 0; i < sim->getNumAgents(); ++i)
-            agentes.at(i)->calculateVelocities( sim->getAgentPosition(i),
-                                                sim->getAgentVelocity(i),
-                                                sim->getTimeStep());
+            ((agents::agent *) agentes.at(i))->calculateVelocities( sim->getAgentPosition(i),
+                                                                    sim->getAgentVelocity(i),
+                                                                    sim->getTimeStep());
 
         setPreferredVelocities(agentes);
 

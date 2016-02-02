@@ -5,6 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,7 +23,10 @@ SOURCES += main.cpp\
     entornografico.cpp \
     Tools/math.cpp \
     Agentes/agentmanager.cpp \
-    Agentes/agent.cpp
+    Agentes/agent.cpp \
+    network/MultiPropuseSockets.cpp \
+    network/connection_sma.cpp \
+    network/connection_aco.cpp
 
 HEADERS  += mainwindow.h \
     qsfmlcanvas.h \
@@ -37,7 +41,12 @@ HEADERS  += mainwindow.h \
     Tools/math.h \
     Agentes/agentmanager.h \
     Agentes/agent.h \
-    headers/opencv_stuff.h
+    headers/opencv_stuff.h \
+    network/MultiPropuseSockets.h \
+    network/connection_sma.h \
+    network/connection_aco.h \
+    network/puertos.h \
+    network/mensajes.h
 
 FORMS    += mainwindow.ui
 
@@ -55,3 +64,4 @@ LIBS += "/usr/local/lib/libRVO.a"
 #-------------------------OpenCV-------------------------
 LIBS += `pkg-config opencv --libs`
 #-------------------------OpenCV-------------------------
+
