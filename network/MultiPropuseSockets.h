@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QByteArray>
 #include <QString>
+#include <QDataStream>
 
 namespace network
 {
@@ -16,6 +17,7 @@ namespace network
         class DataReceiver: public QObject
         {
             Q_OBJECT
+
         private:
             QTcpSocket *socket;
 
@@ -38,6 +40,8 @@ namespace network
         {
         private:
             QTcpSocket *socket;
+
+            QByteArray IntToArray(qint32 source);
 
         public:
             DataSend(QTcpSocket *socket);
@@ -91,15 +95,18 @@ namespace network
     protected:
        QHostAddress adds;
        int port;
+       bool connected_B;
 
     public:
        ServerSimple(QHostAddress adds, int port);
 
        //getters
+       bool isConnected()        { return connected_B; }
        QHostAddress get_host()   { return adds; }
        int get_port()            { return port; }
 
     signals:
+        void newIncomingConnection();
 
     public slots:
        void newConnection();

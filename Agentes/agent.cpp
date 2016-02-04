@@ -5,15 +5,19 @@ using namespace agents;
 float agent::radius = 0;
 float agent::zonaSegura = 0;
 
-agent::agent(const sf::Vector2f posIni, sf::Vector2f posGoal,
-               float spriteSize,
-               float agentRadius, float zonaSeguraScaled, float tetaInicial,
-               float D, float L,
-               sf::Color color):
+agent::agent(int ID,
+             const sf::Vector2f posIni, sf::Vector2f posGoal,
+             float spriteSize,
+             float agentRadius, float zonaSeguraScaled, float tetaInicial,
+             float D, float L,
+             sf::Color color):
+                QObject(),
+                ID(ID),
                 teta(tetaInicial),
                 ballColor(color),
                 D(D), L(L),
-                vL(0), vR(0)
+                vL(0), vR(0),
+                whatIsDiferentVelocities(0.0f)
 {
     this->radius = agentRadius;
     this->zonaSegura = zonaSeguraScaled;
@@ -148,9 +152,26 @@ void agent::calculateVL(RVO::Vector2 velocity)
     vL = u.at<float>(0,0);
     vR = u.at<float>(1,0);
 
-    vL_real = vL/RVO_Manager::TimeStep_real;
-    vR_real = vR/RVO_Manager::TimeStep_real;
 
+    float vl_realNEW = vL/RVO_Manager::TimeStep_real*(180/M_PI);
+    float vr_realNEW = vR/RVO_Manager::TimeStep_real*(180/M_PI);
+    bool changed = false;
+
+
+    if( qAbs(vl_realNEW - vL_real ) >= whatIsDiferentVelocities )
+    {
+        vL_real = vl_realNEW;
+        changed = true;
+    }
+
+    if( qAbs(vr_realNEW - vR_real ) >= whatIsDiferentVelocities )
+    {
+        vR_real = vr_realNEW;
+        changed = true;
+    }
+
+    if( changed && (ID == 1 || ID == 2) )
+        emit velocidadesCalculadas(ID, vR_real, vL_real);
 }
 
 void agent::calculateTeta(float timeStep)

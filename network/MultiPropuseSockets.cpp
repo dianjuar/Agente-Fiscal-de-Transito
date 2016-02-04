@@ -10,8 +10,22 @@ Base::DataSend::DataSend(QTcpSocket *socket)
 
 void Base::DataSend::write(QString s)
 {
+    //socket->write( IntToArray(s.toUtf8().size()) ); //write size of data
+    socket->write(s.toUtf8() ); //write the data itself
+    socket->waitForBytesWritten();
+
+    /*qDebug()<<s;
     socket->write( s.toUtf8() );
-    socket->flush();
+    socket->flush();*/
+}
+
+QByteArray Base::DataSend::IntToArray(qint32 source) //Use qint32 to ensure that the number have 4 bytes
+{
+    //Avoid use of cast, this is the Qt way to serialize objects
+    QByteArray temp;
+    QDataStream data(&temp, QIODevice::ReadWrite);
+    data << source;
+    return temp;
 }
 /////////////////////////////////////////////////////////
 Base::DataReceiver::DataReceiver(QTcpSocket *socket)
@@ -79,6 +93,7 @@ ServerSimple::ServerSimple(QHostAddress adds, int port)
 {
     server = new QTcpServer(this);
     connect(server,SIGNAL(newConnection()), this, SLOT(newConnection()) );
+    bool connected_B = false;
 
     if( !server->listen(adds,port) )
     {
@@ -94,6 +109,8 @@ void ServerSimple::newConnection()
 {
     socket = server->nextPendingConnection();
 
+    connected_B = true;
+
     set_socket_DR(socket);
     set_socket_DS(socket);
 
@@ -101,6 +118,8 @@ void ServerSimple::newConnection()
     connect(socket, SIGNAL(disconnected()), this, SLOT(disconnected()));
     connect(socket, SIGNAL(bytesWritten(qint64)), this, SLOT(bytesWritten(qint64)));
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+
+    emit newIncomingConnection();
 }
 
 void ServerSimple::connected()

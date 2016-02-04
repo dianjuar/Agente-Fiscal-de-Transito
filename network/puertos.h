@@ -11,12 +11,12 @@ namespace network
             ///
             /// \brief Recibe_SMA - puerto por donde recibirá la información del SMA.
             ///
-            int Recibe_SMA = 5001;
+            const int Recibe_SMA = 5001;
 
             ///
             /// \brief ACO - puerto por donde se conectará al ACO.
             ///
-            int ACO = 5001;
+            const int ACO = 5001;
         }
     }
 }

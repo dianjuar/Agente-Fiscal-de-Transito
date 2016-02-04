@@ -1,16 +1,20 @@
-#include "agentmanager.h"
+    #include "agentmanager.h"
 
 using namespace agents;
 
-agentManager::agentManager(QObject *parent) : QObject(parent)
+agentManager::agentManager(network::connections::SMA *connection_sma):
+                             connection_sma(connection_sma)
 {
 
 }
 
 void agentManager::addAgent(agent *a)
 {
+    QObject::connect( a, SIGNAL(velocidadesCalculadas(int,float,float)),
+                      connection_sma, SLOT(enviarVelocidades(int,float,float)));
+
     agentes.push_back( a );
-}
+    }
 
 /*void agentManager::buildDiferencialAgentsPath()
 {

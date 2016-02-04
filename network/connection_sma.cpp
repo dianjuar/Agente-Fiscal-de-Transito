@@ -13,8 +13,9 @@ void SMA::dataAnalizer(QString)
 
 }
 
-void SMA::enviarVelocidades(float Vl, float Vr)
+void SMA::enviarVelocidades(int ID, float Vl, float Vr)
 {
     write( mensajes::Velocidades + mensajes::divisor +
-           QString::number(Vl) + mensajes::divisor_2 + QString::number(Vr) );
+           QString::number(ID) + mensajes::divisor_2 +
+           QString::number(Vl) + mensajes::divisor_2 + QString::number(Vr)+ "\n" );
 }

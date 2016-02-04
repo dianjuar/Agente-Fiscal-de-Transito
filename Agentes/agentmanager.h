@@ -5,26 +5,20 @@
 #include "headers/rvo_stuff.h"
 #include "headers/sfml_stuff.h"
 #include "Agentes/agent.h"
-#include "mycanvas.h"
-
+#include "network/connection_sma.h"
 
 namespace agents
 {
 
-class agentManager : public QObject
+class agentManager
 {
-    Q_OBJECT
+    network::connections::SMA *connection_sma;
 
 public:
-    explicit agentManager(QObject *parent = 0);
+    explicit agentManager(network::connections::SMA *connection_sma);
 
     std::vector<agent*> agentes;
     void addAgent( agent *a );
-
-signals:
-
-public slots:
-    //void buildDiferencialAgentsPath();
 };
 
 }

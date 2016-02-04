@@ -8,13 +8,13 @@ namespace network
     namespace mensajes
     {
         ///Mensajes Standar
-        QString divisor =   "->";
-        QString divisor_2 = "_";
-        QString cerrar =    "close";
-        QString conectado = "connect";
+        const QString divisor =   "->";
+        const QString divisor_2 = "_";
+        const QString cerrar =    "close";
+        const QString conectado = "connect";
 
         ///Mensajes To SMA
-        QString Velocidades = "Vel_IR";
+        const QString Velocidades = "VelLR";
     }
 }
 

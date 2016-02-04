@@ -16,8 +16,14 @@ namespace agents
 {
 class agentPath;
 
-class agent: public sf::CircleShape
+class agent: public QObject,
+             public sf::CircleShape
 {
+    Q_OBJECT
+
+    int ID;
+    float whatIsDiferentVelocities;
+
     sf::Color ballColor;
     float oring;
 
@@ -27,6 +33,10 @@ class agent: public sf::CircleShape
 
     void calculateVL(RVO::Vector2 velocity);
     void calculateTeta(float timeStep);
+
+signals:
+    void velocidadesCalculadas(int ID, float VL, float VR);
+
 
 public:
     static float radius;
@@ -47,7 +57,7 @@ public:
     sf::CircleShape destinoShape;
     sf::Vertex *lineaDestino;
 
-    agent(sf::Vector2f const posIni, sf::Vector2f posGoal,
+    agent(int ID, sf::Vector2f const posIni, sf::Vector2f posGoal,
            float spriteSize,
            float radius = 10.f, float zonaSegura = 0.f, float tetaInicial = 0.0f, float D=10.f, float L=20.f,
            sf::Color color = sf::Color::Red);

@@ -7,6 +7,7 @@
 #include "RVO/rvo_manager.h"
 
 #include "Agentes/agentmanager.h"
+#include "network/connection_sma.h"
 
 
 
@@ -29,6 +30,9 @@ namespace entornoGrafico
 
 class MyCanvas : public QSFMLCanvas
 {
+    Q_OBJECT
+
+    network::connections::SMA *connection_SMA;
 
 public :
     MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size);
@@ -38,6 +42,9 @@ public :
     void update(float deltaTime, float currentTime);
 
     int numeroMaximoPath;
+
+public slots:
+    void inicioDeLaSimulacion();
 
 private :
 

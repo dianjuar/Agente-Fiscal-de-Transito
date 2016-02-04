@@ -6,15 +6,20 @@ MyCanvas::MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size):
     printed_V_MIN_MAX(false),
     tiempoTranscurrido(0)
 {
-    map_longitudPorCuadro_REAL = 22.02271f;
+    map_longitudPorCuadro_REAL = 23.021728;
     radioReal = 13.5f;
-    zonaSeguraReal = 0.5f;
+    zonaSeguraReal = 1.f;
 
-    float globalTime = 3;
-    float maxVelocity = 0.05f;
+    float globalTime = 5;
+    float maxVelocity = 0.10;
     rvo  = new RVO_Manager(globalTime, maxVelocity);
 
-    aManager = new agents::agentManager(this);
+    connection_SMA = new network::connections::SMA();
+
+    aManager = new agents::agentManager(connection_SMA);
+    //SIGNAL(connected())
+    connect( connection_SMA , SIGNAL(newIncomingConnection()),
+             this, SLOT(inicioDeLaSimulacion()));
 }
 
 void MyCanvas::OnInit()
@@ -40,6 +45,8 @@ void MyCanvas::OnInit()
                       "10000001\n"
                       "11111111";
 
+
+
     mapa = new entornoGrafico::mapa( map_Str,
                                      map_longitudPorCuadro_REAL,
                                      QSFMLCanvas::size().width(),
@@ -64,31 +71,39 @@ void MyCanvas::draw()
 
 void MyCanvas::update(float deltaTime, float currentTime)
 {   
-    rvo->updateVisualization(aManager->agentes);
-
-    float delay = (rvo->sim->getGlobalTime()/100.f)-currentTime;
-    QThread::sleep( delay < 0 ? 0:delay );
-
-    if( rvo->haveReachedTheirGoal )
+    if(connection_SMA->isConnected())
     {
-        qDebug()<<"Time RVO:"<<rvo->sim->getGlobalTime()/100<<"       Time real"<<currentTime+delay;
-        exit(EXIT_SUCCESS);
+        rvo->updateVisualization(aManager->agentes);
+
+        float delay = (rvo->sim->getGlobalTime()/100.f)-currentTime;
+        QThread::sleep( delay < 0 ? 0:delay );
+
+        if( rvo->haveReachedTheirGoal )
+        {
+            qDebug()<<"Time RVO:"<<rvo->sim->getGlobalTime()/100<<"       Time real"<<currentTime+delay;
+        }
     }
+}
+
+void MyCanvas::inicioDeLaSimulacion()
+{
+    reset_currentTime();
 }
 
 void MyCanvas::setup_agentes()
 {
     float D,L;
 
-    D = radioScaled;
+    D = mapa->medidaReal2Pixel(4.f);
     L = mapa->medidaReal2Pixel(11.35f);
 
 
 
 
-    agents::agent *a1 = new agents::agent( sf::Vector2f( 2,
+    agents::agent *a1 = new agents::agent( 1,
+                                           sf::Vector2f( 2,
                                                          3),
-                                           sf::Vector2f( 5,
+                                           sf::Vector2f( 4,
                                                          3),
                                            mapa->spriteSize,
                                            radioScaled, zonaSeguraScaled,
@@ -99,16 +114,17 @@ void MyCanvas::setup_agentes()
 
 
     //agente 2
-   /* agents::agent *a2 = new agents::agent( sf::Vector2f( 3,
+    agents::agent *a2 = new agents::agent( 2,
+                                           sf::Vector2f( 3,
                                                          2),
                                            sf::Vector2f( 3,
-                                                         5),
+                                                         4),
                                            mapa->spriteSize,
                                            radioScaled, zonaSeguraScaled,
                                            90,
                                            D, L,
                                            sf::Color::Magenta);
-    aManager->addAgent(a2);*/
+    aManager->addAgent(a2);
 
     //agente 3
    /* agents::agent *a3 = new agents::agent( sf::Vector2f( 4,
