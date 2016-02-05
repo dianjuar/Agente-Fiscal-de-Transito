@@ -94,7 +94,8 @@ void MyCanvas::setup_agentes()
 {
     float D,L;
 
-    D = mapa->medidaReal2Pixel(4.f);
+    //D = mapa->medidaReal2Pixel(4.f);
+    D = radioScaled;
     L = mapa->medidaReal2Pixel(11.35f);
 
 

@@ -100,8 +100,8 @@ float agent::getRadioCompleto()
 void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
                                 float timeStep)
 { 
-    calculateVL(velocity);
-    calculateTeta(timeStep);
+    calculateVL(velocity, timeStep);
+    calculateTeta(velocity,timeStep);
     calculateP();
     //qDebug()<<"***********************";
 
@@ -116,7 +116,7 @@ void agent::calculateP()
     p_grap.setPosition( P );
 }
 
-void agent::calculateVL(RVO::Vector2 velocity)
+void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
 {
     //float denominador = qPow( cos(teta*M_PI/180)  ,2) - qPow( sin(teta*M_PI/180)  ,2);
 
@@ -126,18 +126,18 @@ void agent::calculateVL(RVO::Vector2 velocity)
             v(2,1,CV_32F),
             u;
 
-    float tetaDegres = teta*M_PI/180;
+    float tetaRadian = teta*(M_PI/180);
 
-    m1.at<float>(0,0) = cos(tetaDegres);
-    m1.at<float>(0,1) = cos(tetaDegres);
-    m1.at<float>(1,0) = sin(tetaDegres);
-    m1.at<float>(1,1) = sin(tetaDegres);
+    m1.at<float>(0,0) = cos(tetaRadian);
+    m1.at<float>(0,1) = cos(tetaRadian);
+    m1.at<float>(1,0) = sin(tetaRadian);
+    m1.at<float>(1,1) = sin(tetaRadian);
     //tools::math::printMat(m1);
 
-    m2.at<float>(0,0) = sin(tetaDegres);
-    m2.at<float>(0,1) = -sin(tetaDegres);
-    m2.at<float>(1,0) = -cos(tetaDegres);
-    m2.at<float>(1,1) = cos(tetaDegres);
+    m2.at<float>(0,0) = sin(tetaRadian);
+    m2.at<float>(0,1) = -sin(tetaRadian);
+    m2.at<float>(1,0) = -cos(tetaRadian);
+    m2.at<float>(1,1) = cos(tetaRadian);
     //tools::math::printMat(m2);
 
     m = 0.5f*m1 + (D/L)*m2;
@@ -152,10 +152,13 @@ void agent::calculateVL(RVO::Vector2 velocity)
     vL = u.at<float>(0,0);
     vR = u.at<float>(1,0);
 
+    vL = vL*(100/timeStep);
+    vR = vR*(100/timeStep);
 
-    float vl_realNEW = vL/RVO_Manager::TimeStep_real*(180/M_PI);
-    float vr_realNEW = vR/RVO_Manager::TimeStep_real*(180/M_PI);
+    float vl_realNEW = vL*(180/M_PI);
+    float vr_realNEW = vR*(180/M_PI);
     bool changed = false;
+
 
 
     if( qAbs(vl_realNEW - vL_real ) >= whatIsDiferentVelocities )
@@ -174,13 +177,14 @@ void agent::calculateVL(RVO::Vector2 velocity)
         emit velocidadesCalculadas(ID, vR_real, vL_real);
 }
 
-void agent::calculateTeta(float timeStep)
+void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
 {
   /* float w;
    w = v.x() == 0 ? 0:atan(v.y()/v.x())*180/M_PI;
    //teta = w;*/
 
-   teta = teta - ((vL-vR)/L)*(timeStep*100);
+   teta = teta - ((vL*(180/M_PI)-vR*(180/M_PI))/L);
+    //teta = (atan(velocity.y()/velocity.x())*180/M_PI)*100/timeStep - teta;
 
 }
 

@@ -31,8 +31,8 @@ class agent: public QObject,
     float diferenciaTeta;
 
 
-    void calculateVL(RVO::Vector2 velocity);
-    void calculateTeta(float timeStep);
+    void calculateVL(RVO::Vector2 velocity, float timeStep);
+    void calculateTeta(RVO::Vector2 velocity, float timeStep);
 
 signals:
     void velocidadesCalculadas(int ID, float VL, float VR);

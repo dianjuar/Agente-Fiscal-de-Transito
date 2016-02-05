@@ -50,7 +50,7 @@ RVO_Manager::RVO_Manager(float timeStep, float maxVelocity):
     maxSpeed = maxVelocity;
     sim = new RVO::RVOSimulator();
 
-    TimeStep_real = timeStep/100;
+    TimeStep_real = timeStep*100;
 
 }
 
