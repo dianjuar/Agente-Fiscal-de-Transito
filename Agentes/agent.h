@@ -21,6 +21,7 @@ class agent: public QObject,
 {
     Q_OBJECT
 
+
     int ID;
     float whatIsDiferentVelocities;
 
@@ -40,10 +41,12 @@ signals:
 
 public:
     static float radius;
+    static float D;
+    static float L;
+    static float wheelRadius;
     static float zonaSegura;
+
     float teta;
-    float D;
-    float L;
 
     float vL,vR;
     float vL_real, vR_real;
@@ -58,9 +61,8 @@ public:
     sf::Vertex *lineaDestino;
 
     agent(int ID, sf::Vector2f const posIni, sf::Vector2f posGoal,
-           float spriteSize,
-           float radius = 10.f, float zonaSegura = 0.f, float tetaInicial = 0.0f, float D=10.f, float L=20.f,
-           sf::Color color = sf::Color::Red);
+          float spriteSize, float tetaInicial = 0.0f,
+          sf::Color color = sf::Color::Red);
 
     void updateLineTrayectoria();
     void set_goal(sf::Vector2f posGoal );

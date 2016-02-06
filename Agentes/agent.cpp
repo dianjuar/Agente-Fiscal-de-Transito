@@ -5,27 +5,35 @@ using namespace agents;
 float agent::radius = 0;
 float agent::zonaSegura = 0;
 
+float agent::D = 0;
+float agent::L = 0;
+float agent::wheelRadius = 0;
+
 agent::agent(int ID,
              const sf::Vector2f posIni, sf::Vector2f posGoal,
-             float spriteSize,
-             float agentRadius, float zonaSeguraScaled, float tetaInicial,
-             float D, float L,
+             float spriteSize, float tetaInicial,
              sf::Color color):
                 QObject(),
                 ID(ID),
                 teta(tetaInicial),
                 ballColor(color),
-                D(D), L(L),
                 vL(0), vR(0),
                 whatIsDiferentVelocities(0.0f)
 {
-    this->radius = agentRadius;
-    this->zonaSegura = zonaSeguraScaled;
+    radius = entornoGrafico::mapa::medidaReal2Pixel(13.5f);
+    zonaSegura = entornoGrafico::mapa::medidaReal2Pixel(4.f);
+
+    D = entornoGrafico::mapa::medidaReal2Pixel(4.f);
+    L = entornoGrafico::mapa::medidaReal2Pixel(11.35);
+    wheelRadius = entornoGrafico::mapa::medidaReal2Pixel(2.75f);
+
+
+
 
     // Create the ball
     setFillColor( color );
     float hipotenusaExterna = sqrt( 2*qPow(spriteSize/2,2) );
-    float hipotenusaInterna = sqrt( 2*qPow(agentRadius,2) );
+    float hipotenusaInterna = sqrt( 2*qPow(radius,2) );
 
     oring = hipotenusaExterna < hipotenusaInterna ?
                             hipotenusaInterna-hipotenusaExterna:
@@ -45,11 +53,11 @@ agent::agent(int ID,
     setPosition(this->posIni);
 
     //setOrigin( oring,oring  );
-    setRadius(agentRadius);
-    setOutlineThickness(zonaSeguraScaled);
+    setRadius(radius);
+    setOutlineThickness(zonaSegura);
     setOutlineColor( sf::Color(0,0,255,63) );
 
-    destinoShape.setRadius( agentRadius );
+    destinoShape.setRadius( radius );
     destinoShape.setFillColor( sf::Color( 0, 255, 0, 20 ) );
 
     set_goal( posGoal );
@@ -152,16 +160,14 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
     vL = u.at<float>(0,0);
     vR = u.at<float>(1,0);
 
-    vL = vL*(100/timeStep);
-    vR = vR*(100/timeStep);
+   // vL = vL*(100/timeStep);
+   // vR = vR*(100/timeStep);
 
-    float vl_realNEW = vL*(180/M_PI);
-    float vr_realNEW = vR*(180/M_PI);
+    float vl_realNEW = vL*(180/M_PI)*(100/timeStep);
+    float vr_realNEW = vR*(180/M_PI)*(100/timeStep);
     bool changed = false;
 
-
-
-    if( qAbs(vl_realNEW - vL_real ) >= whatIsDiferentVelocities )
+    /*if( qAbs(vl_realNEW - vL_real ) >= whatIsDiferentVelocities )
     {
         vL_real = vl_realNEW;
         changed = true;
@@ -171,10 +177,10 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
     {
         vR_real = vr_realNEW;
         changed = true;
-    }
+    }*/
 
-    if( changed && (ID == 1 || ID == 2) )
-        emit velocidadesCalculadas(ID, vR_real, vL_real);
+    if( ID == 1 || ID == 1 )
+        emit velocidadesCalculadas(ID, vl_realNEW, vr_realNEW);
 }
 
 void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
@@ -183,7 +189,7 @@ void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
    w = v.x() == 0 ? 0:atan(v.y()/v.x())*180/M_PI;
    //teta = w;*/
 
-   teta = teta - ((vL*(180/M_PI)-vR*(180/M_PI))/L);
+   teta = teta + ((vR - vL)*(wheelRadius/L))*(180/M_PI)*(100/timeStep);
     //teta = (atan(velocity.y()/velocity.x())*180/M_PI)*100/timeStep - teta;
 
 }

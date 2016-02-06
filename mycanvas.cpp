@@ -6,12 +6,12 @@ MyCanvas::MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size):
     printed_V_MIN_MAX(false),
     tiempoTranscurrido(0)
 {
-    map_longitudPorCuadro_REAL = 23.021728;
+    map_longitudPorCuadro_REAL = 27.0185127;
     radioReal = 13.5f;
-    zonaSeguraReal = 1.f;
+    zonaSeguraReal = 4.f;
 
     float globalTime = 5;
-    float maxVelocity = 0.10;
+    float maxVelocity = 0.03;
     rvo  = new RVO_Manager(globalTime, maxVelocity);
 
     connection_SMA = new network::connections::SMA();
@@ -36,14 +36,13 @@ void MyCanvas::OnInit()
 
     setBackgroudColor(sf::Color::Black);
 
-    QString map_Str = "11111111\n"
-                      "10000001\n"
-                      "10000001\n"
-                      "10000001\n"
-                      "10000001\n"
-                      "10000001\n"
-                      "10000001\n"
-                      "11111111";
+    QString map_Str = "1111111\n"
+                      "1000001\n"
+                      "1000001\n"
+                      "1000001\n"
+                      "1000001\n"
+                      "1000001\n"
+                      "1111111";
 
 
 
@@ -92,39 +91,26 @@ void MyCanvas::inicioDeLaSimulacion()
 
 void MyCanvas::setup_agentes()
 {
-    float D,L;
-
-    //D = mapa->medidaReal2Pixel(4.f);
-    D = radioScaled;
-    L = mapa->medidaReal2Pixel(11.35f);
-
-
-
-
-    agents::agent *a1 = new agents::agent( 1,
+   agents::agent *a1 = new agents::agent( 1,
                                            sf::Vector2f( 2,
                                                          3),
                                            sf::Vector2f( 4,
                                                          3),
                                            mapa->spriteSize,
-                                           radioScaled, zonaSeguraScaled,
                                            0.f,
-                                           D, L,
-                                           sf::Color::Red);
+                                           sf::Color::Magenta);
     aManager->addAgent(a1);
 
 
     //agente 2
     agents::agent *a2 = new agents::agent( 2,
-                                           sf::Vector2f( 3,
-                                                         2),
-                                           sf::Vector2f( 3,
-                                                         4),
+                                           sf::Vector2f( 4.5,
+                                                         3.5),
+                                           sf::Vector2f( 2.5,
+                                                         3.5),
                                            mapa->spriteSize,
-                                           radioScaled, zonaSeguraScaled,
-                                           90,
-                                           D, L,
-                                           sf::Color::Magenta);
+                                           180,
+                                           sf::Color::Yellow);
     aManager->addAgent(a2);
 
     //agente 3
