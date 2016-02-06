@@ -163,8 +163,8 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
    // vL = vL*(100/timeStep);
    // vR = vR*(100/timeStep);
 
-    float vl_realNEW = vL*(180/M_PI)*(100/timeStep);
-    float vr_realNEW = vR*(180/M_PI)*(100/timeStep);
+    vL_real = vL*(180/M_PI)*(100/timeStep);
+    vR_real = vR*(180/M_PI)*(100/timeStep);
     bool changed = false;
 
     /*if( qAbs(vl_realNEW - vL_real ) >= whatIsDiferentVelocities )
@@ -180,7 +180,7 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
     }*/
 
     if( ID == 1 || ID == 1 )
-        emit velocidadesCalculadas(ID, vl_realNEW, vr_realNEW);
+        emit velocidadesCalculadas(ID, vL_real, vR_real);
 }
 
 void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
@@ -189,8 +189,7 @@ void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
    w = v.x() == 0 ? 0:atan(v.y()/v.x())*180/M_PI;
    //teta = w;*/
 
-   teta = teta + ((vR - vL)*(wheelRadius/L))*(180/M_PI)*(100/timeStep);
-    //teta = (atan(velocity.y()/velocity.x())*180/M_PI)*100/timeStep - teta;
+   teta = teta + ((vR_real - vL_real)*(wheelRadius/L));
 
 }
 
