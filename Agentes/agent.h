@@ -48,8 +48,8 @@ public:
 
     float teta;
 
-    float vL,vR;
-    float vL_real, vR_real;
+    float vL_linear,vR_linear;
+    float vL_angular, vR_angular;
 
     sf::Vector2f P;
 

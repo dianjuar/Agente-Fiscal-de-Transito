@@ -17,7 +17,7 @@ agent::agent(int ID,
                 ID(ID),
                 teta(tetaInicial),
                 ballColor(color),
-                vL(0), vR(0),
+                vL_linear(0), vR_linear(0),
                 whatIsDiferentVelocities(0.0f)
 {
     radius = entornoGrafico::mapa::medidaReal2Pixel(13.5f);
@@ -157,35 +157,16 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
     u = m.inv()*v;
     //tools::math::printMat(u);
 
-    vL = u.at<float>(0,0);
-    vR = u.at<float>(1,0);
+    vL_linear = u.at<float>(0,0)*(100/timeStep);
+    vR_linear = u.at<float>(1,0)*(100/timeStep);
 
-   // vL = vL*(100/timeStep);
-   // vR = vR*(100/timeStep);
-
-    //VL = 56.177  ---------- VR = 0.0619
-    //VL = 59.653  ---------- VR = -18.706
-
-    //VL = 56.177 ------- vR 0.0790
-
-    vL_real = vL*(180/M_PI)*(100/timeStep);
-    vR_real = vR*(180/M_PI)*(100/timeStep);
-    bool changed = false;
-
-    /*if( qAbs(vl_realNEW - vL_real ) >= whatIsDiferentVelocities )
-    {
-        vL_real = vl_realNEW;
-        changed = true;
-    }
-
-    if( qAbs(vr_realNEW - vR_real ) >= whatIsDiferentVelocities )
-    {
-        vR_real = vr_realNEW;
-        changed = true;
-    }*/
+    vL_angular = vL_linear*wheelRadius*(180/M_PI);
+    vR_angular = vR_linear*wheelRadius*(180/M_PI);
 
     if( ID == 1 || ID == 1 )
-        emit velocidadesCalculadas(ID, vL_real, vR_real);
+        emit velocidadesCalculadas(ID,
+                                   vL_angular,
+                                   vR_angular);
 }
 
 void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
@@ -194,7 +175,7 @@ void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
    w = v.x() == 0 ? 0:atan(v.y()/v.x())*180/M_PI;
    //teta = w;*/
 
-   teta = teta + ((vR_real - vL_real)*(wheelRadius/L))*timeStep/100;
+   teta = teta + ((vR_angular - vL_angular)*(wheelRadius/L))*timeStep/100;
 
 }
 

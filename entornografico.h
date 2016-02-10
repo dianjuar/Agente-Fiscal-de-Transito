@@ -52,6 +52,7 @@ namespace entornoGrafico
         static float map_longitudPorCuadro_REAL;
 
         static float medidaReal2Pixel(float medidaReal);
+        static float pixel2MedidaReal(float medidaPixel);
 
         void drawMapa(MyCanvas *render );
     };
