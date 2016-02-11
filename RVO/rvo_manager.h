@@ -54,6 +54,7 @@ public:
 
     void updateVisualization(std::vector<agents::agent *> &agentes);
     void setPreferredVelocities(std::vector<agents::agent*> agentes);
+
 private:
     bool reachedGoal(std::vector<agents::agent*> &agentes);
 };

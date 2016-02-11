@@ -15,7 +15,7 @@ agent::agent(int ID,
              sf::Color color):
                 QObject(),
                 ID(ID),
-                teta(tetaInicial),
+                teta(tetaInicial*(M_PI/180.f)),
                 ballColor(color),
                 vL_linear(0), vR_linear(0),
                 whatIsDiferentVelocities(0.0f)
@@ -23,12 +23,9 @@ agent::agent(int ID,
     radius = entornoGrafico::mapa::medidaReal2Pixel(13.5f);
     zonaSegura = entornoGrafico::mapa::medidaReal2Pixel(4.f);
 
-    D = entornoGrafico::mapa::medidaReal2Pixel(4.f);
-    L = entornoGrafico::mapa::medidaReal2Pixel(11.35);
-    wheelRadius = entornoGrafico::mapa::medidaReal2Pixel(2.75f);
-
-
-
+    D = 13.5f;
+    L = 11.35;
+    wheelRadius = 2.75f;
 
     // Create the ball
     setFillColor( color );
@@ -118,8 +115,10 @@ void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
 
 void agent::calculateP()
 {
-    P = sf::Vector2f( getPosition().x + D*(cos(teta*(M_PI/180))),
-                      getPosition().y + D*(sin(teta*(M_PI/180))));
+    float Dtransformed = entornoGrafico::mapa::medidaReal2Pixel(D);
+
+    P = sf::Vector2f( getPosition().x + Dtransformed*(cos(teta)),
+                      getPosition().y + Dtransformed*(sin(teta)));
 
     p_grap.setPosition( P );
 }
@@ -134,39 +133,37 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
             v(2,1,CV_32F),
             u;
 
-    float tetaRadian = teta*(M_PI/180);
-
-    m1.at<float>(0,0) = cos(tetaRadian);
-    m1.at<float>(0,1) = cos(tetaRadian);
-    m1.at<float>(1,0) = sin(tetaRadian);
-    m1.at<float>(1,1) = sin(tetaRadian);
+    m1.at<float>(0,0) = cos(teta);
+    m1.at<float>(0,1) = cos(teta);
+    m1.at<float>(1,0) = sin(teta);
+    m1.at<float>(1,1) = sin(teta);
     //tools::math::printMat(m1);
 
-    m2.at<float>(0,0) = sin(tetaRadian);
-    m2.at<float>(0,1) = -sin(tetaRadian);
-    m2.at<float>(1,0) = -cos(tetaRadian);
-    m2.at<float>(1,1) = cos(tetaRadian);
+    m2.at<float>(0,0) = sin(teta);
+    m2.at<float>(0,1) = -sin(teta);
+    m2.at<float>(1,0) = -cos(teta);
+    m2.at<float>(1,1) = cos(teta);
     //tools::math::printMat(m2);
 
     m = 0.5f*m1 + (D/L)*m2;
 
-    v.at<float>(0,0) = velocity.x();
-    v.at<float>(1,0) = velocity.y();
+    v.at<float>(0,0) = entornoGrafico::mapa::pixel2MedidaReal( velocity.x() )*100;
+    v.at<float>(1,0) = entornoGrafico::mapa::pixel2MedidaReal( velocity.y() )*100;
     //tools::math::printMat(v);
 
     u = m.inv()*v;
     //tools::math::printMat(u);
 
-    vL_linear = u.at<float>(0,0)*(100/timeStep);
-    vR_linear = u.at<float>(1,0)*(100/timeStep);
+    vL_linear = u.at<float>(0,0);
+    vR_linear = u.at<float>(1,0);
 
-    vL_angular = vL_linear*wheelRadius*(180/M_PI);
-    vR_angular = vR_linear*wheelRadius*(180/M_PI);
+    vL_angular = (vL_linear/wheelRadius)*(180/M_PI);
+    vR_angular = (vR_linear/wheelRadius)*(180/M_PI);
 
-    if( ID == 1 || ID == 1 )
+    if( ID == 1 || ID == 2 )
         emit velocidadesCalculadas(ID,
-                                   vL_angular,
-                                   vR_angular);
+                                   vR_angular,
+                                   vL_angular);
 }
 
 void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
@@ -174,8 +171,10 @@ void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
   /* float w;
    w = v.x() == 0 ? 0:atan(v.y()/v.x())*180/M_PI;
    //teta = w;*/
+    float deltaT = timeStep/100;
+    float w = (vR_linear - vL_linear)/L;
 
-   teta = teta + ((vR_angular - vL_angular)*(wheelRadius/L))*timeStep/100;
+   teta = teta + w*deltaT;
 
 }
 
@@ -183,4 +182,11 @@ void agent::draw(::MyCanvas *m)
 {
     m->RenderWindow::draw(*this);
     m->RenderWindow::draw( p_grap );
+}
+
+void agent::reachedGoal()
+{
+    emit velocidadesCalculadas(ID,
+                               0,
+                               0);
 }

@@ -77,6 +77,8 @@ public:
 
     void draw(::MyCanvas *m);
     void update();
+
+    void reachedGoal();
 };
 
 

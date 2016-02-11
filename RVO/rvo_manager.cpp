@@ -51,7 +51,6 @@ RVO_Manager::RVO_Manager(float timeStep, float maxVelocity):
     sim = new RVO::RVOSimulator();
 
     TimeStep_real = timeStep*100;
-
 }
 
 void RVO_Manager::add_obstacles(std::vector<entornoGrafico::obstaculo> listaObst)
@@ -64,8 +63,14 @@ void RVO_Manager::add_obstacles(std::vector<entornoGrafico::obstaculo> listaObst
 
 void RVO_Manager::add_agentes(std::vector<agents::agent *> agentes)
 {
+   // int c=0;
     for(auto *a: agentes)
+  //  {
         sim->addAgent(  RVO::Vector2(a->posIni.x, a->posIni.y) );
+    //    sim->setAgentPrefVelocity(c,RVO::Vector2(maxSpeed,maxAgents));
+
+    /*    c++;
+    }*/
 }
 
 void RVO_Manager::setupScenario(float radius, std::vector<agents::agent *> agentes,
@@ -93,7 +98,6 @@ void RVO_Manager::updateVisualization(std::vector<agents::agent *> &agentes)
             ((agents::agent *) agentes.at(i))->calculateVelocities( sim->getAgentPosition(i),
                                                                     sim->getAgentVelocity(i),
                                                                     sim->getTimeStep());
-
         setPreferredVelocities(agentes);
 
         sim->doStep();
@@ -110,6 +114,8 @@ bool RVO_Manager::reachedGoal(std::vector<agents::agent *> &agentes)
 
         if (RVO::absSq(sim->getAgentPosition(i) - agentes[i]->get_goal_RVO()) > 4.0f)
             return false;
+        else
+            agentes[i]->reachedGoal();
     }
 
     haveReachedTheirGoal = true;

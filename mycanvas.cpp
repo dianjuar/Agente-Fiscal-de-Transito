@@ -6,12 +6,12 @@ MyCanvas::MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size):
     printed_V_MIN_MAX(false),
     tiempoTranscurrido(0)
 {
-    map_longitudPorCuadro_REAL = 27.0185127;
+    map_longitudPorCuadro_REAL = 22.f;
     radioReal = 13.5f;
     zonaSeguraReal = 4.f;
 
     float globalTime = 5;
-    float maxVelocity = 0.03;
+    float maxVelocity = 0.1;
     rvo  = new RVO_Manager(globalTime, maxVelocity);
 
     connection_SMA = new network::connections::SMA();
@@ -36,13 +36,14 @@ void MyCanvas::OnInit()
 
     setBackgroudColor(sf::Color::Black);
 
-    QString map_Str = "1111111\n"
-                      "1000001\n"
-                      "1000001\n"
-                      "1000001\n"
-                      "1000001\n"
-                      "1000001\n"
-                      "1111111";
+    QString map_Str = "11111111\n"
+                      "10000000\n"
+                      "10000000\n"
+                      "00000000\n"
+                      "10000000\n"
+                      "10000001\n"
+                      "10000001\n"
+                      "11111111";
 
 
 
@@ -94,7 +95,7 @@ void MyCanvas::setup_agentes()
    agents::agent *a1 = new agents::agent( 1,
                                            sf::Vector2f( 2,
                                                          3),
-                                           sf::Vector2f( 4,
+                                           sf::Vector2f( 5,
                                                          3),
                                            mapa->spriteSize,
                                            0.f,
@@ -104,10 +105,10 @@ void MyCanvas::setup_agentes()
 
     //agente 2
     agents::agent *a2 = new agents::agent( 2,
-                                           sf::Vector2f( 4.5,
-                                                         3.5),
-                                           sf::Vector2f( 2.5,
-                                                         3.5),
+                                           sf::Vector2f( 5,
+                                                         3),
+                                           sf::Vector2f( 2,
+                                                         3),
                                            mapa->spriteSize,
                                            180,
                                            sf::Color::Yellow);
