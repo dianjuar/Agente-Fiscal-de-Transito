@@ -21,16 +21,8 @@ class agent: public QObject,
 {
     Q_OBJECT
 
-
-    int ID;
-    float whatIsDiferentVelocities;
-
     sf::Color ballColor;
     float oring;
-
-    float tetaOriginal;
-    float diferenciaTeta;
-
 
     void calculateVL(RVO::Vector2 velocity, float timeStep);
     void calculateTeta(RVO::Vector2 velocity, float timeStep);
@@ -40,6 +32,21 @@ signals:
 
 
 public:
+    enum
+    {
+        norte=0,
+        noreste=1,
+        este=2,
+        sureste=3,
+        sur=4,
+        suroeste=5,
+        oeste=6,
+        noroeste=7,
+    };
+
+    int ID;
+    int direccion;
+
     static float radius;
     static float D;
     static float L;
@@ -60,9 +67,7 @@ public:
     sf::CircleShape destinoShape;
     sf::Vertex *lineaDestino;
 
-    agent(int ID, sf::Vector2f const posIni, sf::Vector2f posGoal,
-          float spriteSize, float tetaInicial = 0.0f,
-          sf::Color color = sf::Color::Red);
+        agent(int ID, int direccionInicial = 0.0f);
 
     void updateLineTrayectoria();
     void set_goal(sf::Vector2f posGoal );

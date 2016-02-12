@@ -15,6 +15,9 @@ namespace network
 
         ///Mensajes To SMA
         const QString Velocidades = "VelLR";
+
+        ///Menajes From SMA
+        const QString ExistenseNotification = "here";
     }
 }
 

@@ -8,9 +8,20 @@ SMA::SMA():
 
 }
 
-void SMA::dataAnalizer(QString)
+void SMA::dataAnalizer(QString msj)
 {
+    QStringList msjDividido =  msj.split(network::mensajes::divisor, QString::SkipEmptyParts );
 
+    QString encabezado = msjDividido.at(0);
+    QString cuerpo = msjDividido.at(1);
+
+    if( QString::compare(encabezado, network::mensajes::ExistenseNotification, Qt::CaseInsensitive) )
+    {
+        int ID = cuerpo.split( network::mensajes::divisor_2, QString::SkipEmptyParts ).at(0).toInt();
+        int direccion = cuerpo.split( network::mensajes::divisor_2, QString::SkipEmptyParts ).at(1).toInt();
+
+        emit newAgente(ID, direccion);
+    }
 }
 
 void SMA::enviarVelocidades(int ID, float Vl, float Vr)

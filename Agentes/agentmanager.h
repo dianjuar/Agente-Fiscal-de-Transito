@@ -7,12 +7,25 @@
 #include "Agentes/agent.h"
 #include "network/connection_sma.h"
 
+//------prototyping-------
+namespace network
+{
+    namespace connections
+    {
+        class SMA;
+    }
+}
+//------prototyping-------
+
 namespace agents
 {
 
-class agentManager
+class agentManager: public QObject
 {
     network::connections::SMA *connection_sma;
+
+public slots:
+    void newAgente(int ID, int direccion);
 
 public:
     explicit agentManager(network::connections::SMA *connection_sma);

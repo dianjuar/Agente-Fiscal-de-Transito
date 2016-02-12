@@ -10,10 +10,13 @@ float mapa::map_longitudPorCuadro_REAL  = 0;
 
 std::vector< entornoGrafico::obstaculo > mapa::obstaculos;
 
+sf::Vector2f mapa::inicio_Point     = sf::Vector2f(0,0);
+sf::Vector2f mapa::llegada_Point    = sf::Vector2f(0,0);
+
 mapa::mapa(QString map_Str,
            float map_longitudPorCuadro_REAL,
            float canvasSize,
-           sf::Texture libreTexture, sf::Texture obstaculoTexture)
+           sf::Texture libreTexture, sf::Texture obstaculoTexture, sf::Texture inicioTexture, sf::Texture llegadaTexture)
 {
     this->map_Str = map_Str;
     this->map_longitudPorCuadro_REAL = map_longitudPorCuadro_REAL;
@@ -22,6 +25,8 @@ mapa::mapa(QString map_Str,
 
     this->libreTexture = libreTexture;
     this->obstaculoTexture = obstaculoTexture;
+    this->inicioTexture = inicioTexture;
+    this->llegadaTexture = llegadaTexture;
 
     setup_scalesAndSizes(canvasSize);
     setup_map();
@@ -62,7 +67,7 @@ void mapa::setup_map()
         for (int j = 0; j < nMap; ++j)
         {
             int val = QStrRow.at(j).digitValue();
-            rowVecInt.push_back( val );
+            rowVecInt.push_back( (val == inicio || val == llegada) ? libre : val );
 
             sf::Sprite cuadro;
             //cuadro.setPosition( j*spriteSize , i*spriteSize );
@@ -81,6 +86,18 @@ void mapa::setup_map()
                 case libre:
                     cuadro.setTexture(libreTexture);
                     cuadro.setPosition( j*spriteSize , i*spriteSize );
+                break;
+
+                case inicio:
+                    cuadro.setTexture(inicioTexture);
+                    cuadro.setPosition( j*spriteSize , i*spriteSize );
+                    inicio_Point = sf::Vector2f( j,i );
+                break;
+
+                case llegada:
+                    cuadro.setTexture(llegadaTexture);
+                    cuadro.setPosition( j*spriteSize , i*spriteSize );
+                    llegada_Point = sf::Vector2f(j,i);
                 break;
             }
 

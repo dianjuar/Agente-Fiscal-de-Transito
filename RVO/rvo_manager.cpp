@@ -2,7 +2,7 @@
 
 float RVO_Manager::TimeStep_real = 0;
 
-RVO_Manager::RVO_Manager(RVO::RVOSimulator *sim):
+/*RVO_Manager::RVO_Manager(RVO::RVOSimulator *sim):
     maxAgents(3),
     timeHorizon(5),
     timeHorizonObst(5),
@@ -10,9 +10,9 @@ RVO_Manager::RVO_Manager(RVO::RVOSimulator *sim):
     maxSpeed(2.f)
 {
     this->sim = sim;
-}
+}*/
 
-RVO_Manager::RVO_Manager(float radius,
+/*RVO_Manager::RVO_Manager(float radius,
                          std::vector<agents::agent *> agentes,
                          std::vector<entornoGrafico::obstaculo> listaObst):
                             maxAgents(3),
@@ -24,10 +24,10 @@ RVO_Manager::RVO_Manager(float radius,
 {
     sim = new RVO::RVOSimulator();
 
-    /* Specify the global time step of the simulation. */
+    // Specify the global time step of the simulation.
     sim->setTimeStep(timeStep);
 
-    /* Specify the default parameters for agents that are subsequently added. */
+    // Specify the default parameters for agents that are subsequently added.
     sim->setAgentDefaults( radius*2,
                            maxAgents,
                            timeHorizon, timeHorizonObst,
@@ -36,8 +36,7 @@ RVO_Manager::RVO_Manager(float radius,
 
     add_agentes(agentes);
     add_obstacles(listaObst);
-}
-
+}*/
 
 //este es el que estoy usando
 RVO_Manager::RVO_Manager(float timeStep, float maxVelocity):
@@ -61,10 +60,10 @@ void RVO_Manager::add_obstacles(std::vector<entornoGrafico::obstaculo> listaObst
     sim->processObstacles();
 }
 
-void RVO_Manager::add_agentes(std::vector<agents::agent *> agentes)
+void RVO_Manager::add_agentes()
 {
    // int c=0;
-    for(auto *a: agentes)
+    for(auto *a: *agentes)
   //  {
         sim->addAgent(  RVO::Vector2(a->posIni.x, a->posIni.y) );
     //    sim->setAgentPrefVelocity(c,RVO::Vector2(maxSpeed,maxAgents));
@@ -73,21 +72,23 @@ void RVO_Manager::add_agentes(std::vector<agents::agent *> agentes)
     }*/
 }
 
-void RVO_Manager::setupScenario(float radius, std::vector<agents::agent *> agentes,
+void RVO_Manager::setupScenario(float radius, std::vector<agents::agent *> *agentes,
                                 std::vector<entornoGrafico::obstaculo> listaObst)
 {
+    this->agentes = agentes;
+
     /* Specify the global time step of the simulation. */
     sim->setTimeStep(timeStep);
 
     /* Specify the default parameters for agents that are subsequently added. */
     sim->setAgentDefaults( radius*(750/100),
                            maxAgents,
-                           timeHorizon, timeHorizonObst,
+                           timeHorizon*300, timeHorizonObst*300,
                            radius,
                            maxSpeed);
 
     add_obstacles(listaObst);
-    add_agentes(agentes);
+    add_agentes();
 }
 
 void RVO_Manager::updateVisualization(std::vector<agents::agent *> &agentes)

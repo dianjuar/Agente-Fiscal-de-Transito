@@ -5,6 +5,7 @@
 #include "network/MultiPropuseSockets.h"
 #include "network/puertos.h"
 #include "network/mensajes.h"
+#include "Agentes/agent.h"
 
 namespace network
 {
@@ -17,6 +18,9 @@ namespace network
             SMA();
 
             void dataAnalizer(QString);
+
+        signals:
+            void newAgente(int ID, int direccion);
 
         public slots:
             void enviarVelocidades(int ID, float Vl, float Vr);

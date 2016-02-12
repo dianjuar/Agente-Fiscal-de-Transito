@@ -10,16 +10,15 @@ float agent::L = 0;
 float agent::wheelRadius = 0;
 
 agent::agent(int ID,
-             const sf::Vector2f posIni, sf::Vector2f posGoal,
-             float spriteSize, float tetaInicial,
-             sf::Color color):
+             int direccionInicial):
                 QObject(),
                 ID(ID),
-                teta(tetaInicial*(M_PI/180.f)),
-                ballColor(color),
-                vL_linear(0), vR_linear(0),
-                whatIsDiferentVelocities(0.0f)
+                direccion(direccionInicial),
+                vL_linear(0), vR_linear(0)
 {
+    float spriteSize = entornoGrafico::mapa::medidaReal2Pixel( entornoGrafico::mapa::spriteSize );
+    teta = direccion*(M_PI/4);
+
     radius = entornoGrafico::mapa::medidaReal2Pixel(13.5f);
     zonaSegura = entornoGrafico::mapa::medidaReal2Pixel(4.f);
 
@@ -27,8 +26,26 @@ agent::agent(int ID,
     L = 11.35;
     wheelRadius = 2.75f;
 
+    posIni = entornoGrafico::mapa::inicio_Point;
+
+    switch (ID)
+    {
+        case 1:
+            ballColor = sf::Color::Magenta;
+        break;
+
+        case 2:
+            ballColor = sf::Color::Yellow;
+        break;
+
+        case 3:
+            ballColor = sf::Color::Green;
+        break;
+    }
+
     // Create the ball
-    setFillColor( color );
+    setFillColor( ballColor );
+
     float hipotenusaExterna = sqrt( 2*qPow(spriteSize/2,2) );
     float hipotenusaInterna = sqrt( 2*qPow(radius,2) );
 
@@ -63,9 +80,6 @@ agent::agent(int ID,
     p_grap.setRadius(4);
     p_grap.setFillColor(sf::Color::Black);
     p_grap.setOrigin( p_grap.getRadius()*1.5, p_grap.getRadius()*1.5 );
-
-    tetaOriginal = teta;
-    diferenciaTeta = 0;
 }
 
 void agent::updateLineTrayectoria()
