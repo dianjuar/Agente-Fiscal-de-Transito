@@ -1,13 +1,16 @@
 #include "simulacion.h"
 
 
-simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Size, network::connections::SMA *connection_SMA):
+simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Size,
+                       QString map, float dist, network::connections::SMA *connection_SMA):
     QSFMLCanvas(Parent, Position, Size),
     numeroMaximoPath(0),
     printed_V_MIN_MAX(false),
     tiempoTranscurrido(0),
     fullyLoaded(false),
-    connection_SMA(connection_SMA)
+    connection_SMA(connection_SMA),
+    map(map),
+    dist(dist)
 {
     map_longitudPorCuadro_REAL = 21.023796f;
     radioReal = 13.5f;
@@ -19,8 +22,8 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
 
     aManager = new agents::agentManager(connection_SMA);
 
-    connect( connection_SMA , SIGNAL(newIncomingConnection()),
-             this, SLOT(inicioDeLaSimulacion()));
+    /*connect( connection_SMA , SIGNAL(newIncomingConnection()),
+             this, SLOT(inicioDeLaSimulacion()));*/
 }
 
 void simulacion::OnInit()
@@ -40,6 +43,7 @@ void simulacion::OnInit()
     radioScaled = mapa->medidaReal2Pixel(radioReal);
     zonaSeguraScaled = mapa->medidaReal2Pixel(zonaSeguraReal);
 
+    setInformacionGrafica(map,dist);
 }
 
 void simulacion::setInformacionGrafica(QString map, float dist)
@@ -55,7 +59,7 @@ void simulacion::setInformacionGrafica(QString map, float dist)
                         &aManager->agentes,
                         mapa->obstaculos);
 
-    emit IHaveWhatINeed();
+    emit IHaveWhatINeed( waitingDialog::Req_InfEnv );
 
     fullyLoaded = true;
 }

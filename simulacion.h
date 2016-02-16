@@ -4,11 +4,11 @@
 #include "qsfmlcanvas.h"
 #include "Tools/sfml.h"
 #include "entornografico.h"
+#include "waitingdialog.h"
 #include "RVO/rvo_manager.h"
 
 #include "Agentes/agentmanager.h"
 #include "network/connection_sma.h"
-
 
 
 //--------protyping---------
@@ -32,9 +32,10 @@ class simulacion : public QSFMLCanvas
 {
     Q_OBJECT
 
-public :
+public:
     simulacion(QWidget* Parent, const QPoint& Position, const QSize& Size,
-             network::connections::SMA *connection_SMA);
+               QString map, float dist,
+               network::connections::SMA *connection_SMA);
 
     void OnInit();
     void draw();
@@ -45,7 +46,7 @@ public :
     void setInformacionGrafica(QString map, float dist);
 
 signals:
-    void IHaveWhatINeed();
+    void IHaveWhatINeed(int nReq);
 
 public slots:
     void inicioDeLaSimulacion();
@@ -57,6 +58,9 @@ private :
     entornoGrafico::mapa *mapa;
 
     agents::agentManager *aManager;
+
+    QString map;
+    float dist;
 
     bool fullyLoaded;
 

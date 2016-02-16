@@ -1,24 +1,21 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(network::connections::SMA *sma,
+                       network::connections::ACO *aco, QString map, float dist,
+                       QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    C_ACO(aco),
+    C_SMA(sma)
 {
     ui->setupUi(this);
 
-    C_ACO = new network::connections::ACO( "127.0.0.1" );
-    C_SMA = new network::connections::SMA();
-
-
-
     //Create a SFML view inside the main frame
     simulacion* sm = new simulacion(get_container(), QPoint(0, 0), get_container()->size(),
-                                      C_SMA);
-    //sm->show();
-
-    waitingDialog *w = new waitingDialog(parent,C_ACO,C_SMA,sm);
-    w->show();
+                                    map,dist,
+                                    C_SMA);
+    sm->show();
 }
 
 MainWindow::~MainWindow()

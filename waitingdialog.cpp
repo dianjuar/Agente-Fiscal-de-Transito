@@ -1,37 +1,54 @@
 #include "waitingdialog.h"
 #include "ui_waitingdialog.h"
 
-waitingDialog::waitingDialog(QWidget *parent,
-                             network::connections::ACO *C_ACO,
-                             network::connections::SMA *C_SMA,
-                             simulacion* sm) :
+waitingDialog::waitingDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::waitingDialog),
-    C_ACO(C_ACO),
-    C_SMA(C_SMA),
     requirementsReady(0)
 {
     ui->setupUi(this);
 
+    C_ACO = new network::connections::ACO(ui->label_estadoConexionACO->text());
+    C_SMA = new network::connections::SMA();
 
     connect(C_SMA, SIGNAL(newIncomingConnection()),
             this, SLOT(newRequirementReady()) );
 
-    connect(sm, SIGNAL(IHaveWhatINeed()),
-            this, SLOT(newRequirementReady()) );
-
-    connect(C_SMA, SIGNAL(newIncomingConnection()),
-            this, SLOT(connectionWithSMA()) );
+    connect(C_ACO, SIGNAL(llego_datosEntornoGrafico(QString,float)),
+            this, SLOT(get_datosEntornoGrafico(QString,float)) );
 }
 
-void waitingDialog::newRequirementReady()
+void waitingDialog::newRequirementReady(int nReq)
 {
     requirementsReady++;
 
+    switch (nReq)
+    {
+        case Req_SMA:
+            ui->label_estadoConexionSMA->setText("Conectado!");
+        break;
+
+        case Req_InfEnv:
+            ui->label_estadoInformacionGrafica->setText("Conectado!");
+        break;
+    }
+
     if(requirementsReady == 2)
     {
+        MainWindow *w = new MainWindow(C_SMA,C_ACO,
+                                       map,dist);
+        w->show();
 
+        this->setVisible(false);
     }
+}
+
+void waitingDialog::get_datosEntornoGrafico(QString map, float dist)
+{
+    this->map = map;
+    this->dist = dist;
+
+    newRequirementReady(Req_InfEnv);
 }
 
 waitingDialog::~waitingDialog()
@@ -53,9 +70,4 @@ void waitingDialog::on_pushButton_clicked()
     {
         ui->label_estadoConexionACO->setText("Error!");
     }
-}
-
-void waitingDialog::connectionWithSMA()
-{
-    ui->label_estadoConexionSMA->setText("Conectado!");
 }

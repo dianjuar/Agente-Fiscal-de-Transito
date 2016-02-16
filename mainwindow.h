@@ -4,19 +4,35 @@
 #include <QMainWindow>
 #include "simulacion.h"
 #include "network/connection_aco.h"
-#include "network/connection_sma.h"
-#include "waitingdialog.h"
 
 namespace Ui {
 class MainWindow;
 }
+
+//------prototiping------
+class simulacion;
+
+namespace network
+{
+    namespace connections
+    {
+        class ACO;
+        class SMA;
+    }
+}
+//------prototiping------
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    MainWindow(network::connections::SMA *sma,
+               network::connections::ACO *aco,
+               QString map,
+               float dist,
+               QWidget *parent = 0);
+
     ~MainWindow();
 
     QWidget* get_container();
@@ -27,8 +43,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    ::network::connections::ACO *C_ACO;
     ::network::connections::SMA *C_SMA;
+    ::network::connections::ACO *C_ACO;
 };
 
 #endif // MAINWINDOW_H

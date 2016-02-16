@@ -5,10 +5,26 @@
 #include "network/connection_aco.h"
 #include "network/connection_sma.h"
 #include "simulacion.h"
+#include "mainwindow.h"
+
+
 
 namespace Ui {
 class waitingDialog;
 }
+
+//------prototiping------
+class simulacion;
+
+namespace network
+{
+    namespace connections
+    {
+        class ACO;
+        class SMA;
+    }
+}
+//------prototiping------
 
 class waitingDialog : public QDialog
 {
@@ -19,21 +35,25 @@ class waitingDialog : public QDialog
 
     int requirementsReady;
 
+    QString map;
+    float dist;
+
     Ui::waitingDialog *ui;
 
-public slots:
-    void newRequirementReady();
-
 public:
-    explicit waitingDialog(QWidget *parent = 0,
-                           ::network::connections::ACO *C_ACO = NULL,
-                           ::network::connections::SMA *C_SMA = NULL,
-                           simulacion *sm = NULL);
+    explicit waitingDialog(QWidget *parent = 0);
     ~waitingDialog();
+
+    enum
+    {
+        Req_SMA     = (int) 0,
+        Req_InfEnv  = (int) 1
+    };
 
 public slots:
     void on_pushButton_clicked();
-    void connectionWithSMA();
+    void newRequirementReady(int nReq=Req_SMA);
+    void get_datosEntornoGrafico(QString map, float dist);
 
 };
 
