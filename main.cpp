@@ -2,7 +2,7 @@
 #include <QApplication>
 
 #include "headers/qt_stuff.h"
-#include "mycanvas.h"
+#include "simulacion.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,8 +11,6 @@ int main(int argc, char *argv[])
     MainWindow *w = new MainWindow();
     //w->resize(400,400);
     w->show();
-
-
 
     return a.exec();
 }

@@ -17,7 +17,6 @@ CONFIG   += c++11
 SOURCES += main.cpp\
         mainwindow.cpp \
     qsfmlcanvas.cpp \
-    mycanvas.cpp \
     Tools/sfml.cpp \
     RVO/rvo_manager.cpp \
     entornografico.cpp \
@@ -26,14 +25,15 @@ SOURCES += main.cpp\
     Agentes/agent.cpp \
     network/MultiPropuseSockets.cpp \
     network/connection_sma.cpp \
-    network/connection_aco.cpp
+    network/connection_aco.cpp \
+    simulacion.cpp \
+    waitingdialog.cpp
 
 HEADERS  += mainwindow.h \
     qsfmlcanvas.h \
     headers/qt_stuff.h \
     headers/rvo_stuff.h \
     headers/sfml_stuff.h \
-    mycanvas.h \
     sfml.h \
     Tools/sfml.h \
     RVO/rvo_manager.h \
@@ -46,9 +46,12 @@ HEADERS  += mainwindow.h \
     network/connection_sma.h \
     network/connection_aco.h \
     network/puertos.h \
-    network/mensajes.h
+    network/mensajes.h \
+    simulacion.h \
+    waitingdialog.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    waitingdialog.ui
 
 #-------------------------SFML-------------------------
 LIBS += -L"/opt/SFML-2.3.2/lib"

@@ -7,17 +7,20 @@ namespace network
 {
     namespace mensajes
     {
-        ///Mensajes Standar
+        //Mensajes Standar
         const QString divisor =   "->";
         const QString divisor_2 = "_";
         const QString cerrar =    "close";
         const QString conectado = "connect";
 
-        ///Mensajes To SMA
-        const QString Velocidades = "VelLR";
+        //Mensajes To SMA
+        const QString MeToSMA_Velocidades = "VelLR";
 
-        ///Menajes From SMA
-        const QString ExistenseNotification = "here";
+        //Mensajes From SMA
+        const QString SMAtoMe_ExistenseNotification = "here";
+
+        //Mensajes from ACO
+        const QString ACOtoMe_EnviromentInfo = "EnvInfo";
     }
 }
 

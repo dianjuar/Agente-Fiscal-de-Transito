@@ -42,7 +42,7 @@ float mapa::pixel2MedidaReal(float medidaPixel)
     return medidaPixel*map_longitudPorCuadro_REAL/spriteSize;
 }
 
-void mapa::drawMapa( MyCanvas *render )
+void mapa::drawMapa( simulacion *render )
 {
     for (int i = 0; i < nMap; ++i)
         for (int j = 0; j < nMap; ++j)

@@ -75,6 +75,9 @@ namespace network
        QString get_host()   { return host; }
        int get_port()       { return port; }
 
+       //setters
+       void set_host( QString host ){ this->host = host; }
+
     signals:
 
     public slots:

@@ -1,10 +1,13 @@
-#include "mycanvas.h"
+#include "simulacion.h"
 
-MyCanvas::MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size):
+
+simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Size, network::connections::SMA *connection_SMA):
     QSFMLCanvas(Parent, Position, Size),
     numeroMaximoPath(0),
     printed_V_MIN_MAX(false),
-    tiempoTranscurrido(0)
+    tiempoTranscurrido(0),
+    fullyLoaded(false),
+    connection_SMA(connection_SMA)
 {
     map_longitudPorCuadro_REAL = 21.023796f;
     radioReal = 13.5f;
@@ -14,66 +17,61 @@ MyCanvas::MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size):
     float maxVelocity = 0.1;
     rvo  = new RVO_Manager(globalTime, maxVelocity);
 
-    connection_SMA = new network::connections::SMA();
-
     aManager = new agents::agentManager(connection_SMA);
-    //SIGNAL(connected())
+
     connect( connection_SMA , SIGNAL(newIncomingConnection()),
              this, SLOT(inicioDeLaSimulacion()));
 }
 
-void MyCanvas::OnInit()
+void simulacion::OnInit()
 {
     // Load the image
     qDebug()<<"onInit";
     QString dir = QDir::currentPath();
     qDebug()<< "HELLO: " << dir;
 
-    sf::Texture libreTex, obstTex, inicioTex, llegadaTex;
-
     tools::sfml::loadTexture(libreTex, "src/Img/Mapa/libre.png");
     tools::sfml::loadTexture(obstTex, "src/Img/Mapa/obstaculo.png");
     tools::sfml::loadTexture(inicioTex, "src/Img/Mapa/inicio.png");
     tools::sfml::loadTexture(llegadaTex, "src/Img/Mapa/llegada.png");
 
-
     setBackgroudColor(sf::Color::Black);
-
-    QString map_Str = "111111111\n"
-                      "100000000\n"
-                      "100000000\n"
-                      "100000000\n"
-                      "100011000\n"
-                      "100011000\n"
-                      "100000000\n"
-                      "100000000\n"
-                      "000000000";
-
-
-
-    mapa = new entornoGrafico::mapa( map_Str,
-                                     map_longitudPorCuadro_REAL,
-                                     QSFMLCanvas::size().width(),
-                                     libreTex, obstTex, inicioTex, llegadaTex  );
 
     radioScaled = mapa->medidaReal2Pixel(radioReal);
     zonaSeguraScaled = mapa->medidaReal2Pixel(zonaSeguraReal);
 
-    setup_agentes();
+}
+
+void simulacion::setInformacionGrafica(QString map, float dist)
+{
+    map_longitudPorCuadro_REAL = dist;
+
+    mapa = new entornoGrafico::mapa( map,
+                                     map_longitudPorCuadro_REAL,
+                                     QSFMLCanvas::size().width(),
+                                     libreTex, obstTex, inicioTex, llegadaTex  );
+
     rvo->setupScenario( mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),
                         &aManager->agentes,
                         mapa->obstaculos);
+
+    emit IHaveWhatINeed();
+
+    fullyLoaded = true;
 }
 
-void MyCanvas::draw()
+void simulacion::draw()
 {
-    mapa->drawMapa( this );
+    if(fullyLoaded)
+    {
+        mapa->drawMapa( this );
 
-    for(auto *agente : aManager->agentes)
-        agente->draw(this);
+        for(auto *agente : aManager->agentes)
+            agente->draw(this);
+    }
 }
 
-void MyCanvas::update(float deltaTime, float currentTime)
+void simulacion::update(float deltaTime, float currentTime)
 {   
     if(connection_SMA->isConnected())
     {
@@ -89,12 +87,7 @@ void MyCanvas::update(float deltaTime, float currentTime)
     }
 }
 
-void MyCanvas::inicioDeLaSimulacion()
+void simulacion::inicioDeLaSimulacion()
 {
     reset_currentTime();
-}
-
-void MyCanvas::setup_agentes()
-{
-
 }

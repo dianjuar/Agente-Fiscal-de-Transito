@@ -7,6 +7,9 @@
 #include "network/mensajes.h"
 #include "Agentes/agent.h"
 
+
+class MainWindow;
+
 namespace network
 {
     namespace connections
@@ -16,7 +19,6 @@ namespace network
             Q_OBJECT
         public:
             SMA();
-
             void dataAnalizer(QString);
 
         signals:

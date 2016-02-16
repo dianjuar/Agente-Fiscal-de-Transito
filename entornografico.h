@@ -6,11 +6,11 @@
 #include "headers/rvo_stuff.h"
 #include "Tools/sfml.h"
 
-#include "mycanvas.h"
+#include "simulacion.h"
 
 
 //--------protyping---------
-class MyCanvas;
+class simulacion;
 
 namespace entornoGrafico
 {
@@ -60,7 +60,7 @@ namespace entornoGrafico
         static float medidaReal2Pixel(float medidaReal);
         static float pixel2MedidaReal(float medidaPixel);
 
-        void drawMapa(MyCanvas *render );
+        void drawMapa(simulacion *render );
     };
 
     class obstaculo

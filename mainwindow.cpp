@@ -7,9 +7,18 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    C_ACO = new network::connections::ACO( "127.0.0.1" );
+    C_SMA = new network::connections::SMA();
+
+
+
     //Create a SFML view inside the main frame
-    MyCanvas* SFMLView = new MyCanvas(get_container(), QPoint(0, 0), get_container()->size() );
-    SFMLView->show();
+    simulacion* sm = new simulacion(get_container(), QPoint(0, 0), get_container()->size(),
+                                      C_SMA);
+    //sm->show();
+
+    waitingDialog *w = new waitingDialog(parent,C_ACO,C_SMA,sm);
+    w->show();
 }
 
 MainWindow::~MainWindow()
@@ -20,4 +29,9 @@ MainWindow::~MainWindow()
 QWidget *MainWindow::get_container()
 {
     return ui->container;
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+
 }

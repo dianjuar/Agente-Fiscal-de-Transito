@@ -12,7 +12,7 @@
 
 
 //--------protyping---------
-class MyCanvas;
+class simulacion;
 class RVO_Manager;
 
 
@@ -28,14 +28,13 @@ namespace entornoGrafico
 }
 //--------protyping---------
 
-class MyCanvas : public QSFMLCanvas
+class simulacion : public QSFMLCanvas
 {
     Q_OBJECT
 
-    network::connections::SMA *connection_SMA;
-
 public :
-    MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size);
+    simulacion(QWidget* Parent, const QPoint& Position, const QSize& Size,
+             network::connections::SMA *connection_SMA);
 
     void OnInit();
     void draw();
@@ -43,14 +42,23 @@ public :
 
     int numeroMaximoPath;
 
+    void setInformacionGrafica(QString map, float dist);
+
+signals:
+    void IHaveWhatINeed();
+
 public slots:
     void inicioDeLaSimulacion();
 
 private :
+    sf::Texture libreTex, obstTex, inicioTex, llegadaTex;
 
+    network::connections::SMA *connection_SMA;
     entornoGrafico::mapa *mapa;
 
     agents::agentManager *aManager;
+
+    bool fullyLoaded;
 
     float map_longitudPorCuadro_REAL;
     float radioReal, radioScaled;
@@ -62,9 +70,6 @@ private :
     bool printed_V_MIN_MAX;
 
     RVO_Manager *rvo;
-
-    void setup_agentes();
-   // void drawCleanSteps();
 };
 
 #endif // MYCANVAS_H

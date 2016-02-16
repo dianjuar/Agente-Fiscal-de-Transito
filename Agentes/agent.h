@@ -8,9 +8,9 @@
 #include "headers/sfml_stuff.h"
 #include "headers/opencv_stuff.h"
 #include "Tools/math.h"
-#include "mycanvas.h"
+#include "simulacion.h"
 
-class MyCanvas;
+class simulacion;
 
 namespace agents
 {
@@ -80,7 +80,7 @@ public:
 
     void calculateP();
 
-    void draw(::MyCanvas *m);
+    void draw(::simulacion *m);
     void update();
 
     void reachedGoal();

@@ -192,7 +192,7 @@ void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
 
 }
 
-void agent::draw(::MyCanvas *m)
+void agent::draw(::simulacion *m)
 {
     m->RenderWindow::draw(*this);
     m->RenderWindow::draw( p_grap );
