@@ -22,8 +22,6 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
 
     aManager = new agents::agentManager(connection_SMA);
 
-    /*connect( connection_SMA , SIGNAL(newIncomingConnection()),
-             this, SLOT(inicioDeLaSimulacion()));*/
 }
 
 void simulacion::OnInit()
@@ -77,18 +75,13 @@ void simulacion::draw()
 
 void simulacion::update(float deltaTime, float currentTime)
 {   
-    if(connection_SMA->isConnected())
+    /*if(connection_SMA->isConnected() && aManager->agentes.size()!=0)
     {
         rvo->updateVisualization(aManager->agentes);
 
         float delay = (rvo->sim->getGlobalTime()/100.f)-currentTime;
         QThread::sleep( delay < 0 ? 0:delay );
-
-        if( rvo->haveReachedTheirGoal )
-        {
-            qDebug()<<"Time RVO:"<<rvo->sim->getGlobalTime()/100<<"       Time real"<<currentTime+delay;
-        }
-    }
+    }*/
 }
 
 void simulacion::inicioDeLaSimulacion()

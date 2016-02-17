@@ -26,8 +26,6 @@ agent::agent(int ID,
     L = 11.35;
     wheelRadius = 2.75f;
 
-    posIni = entornoGrafico::mapa::inicio_Point;
-
     switch (ID)
     {
         case 1:
@@ -46,25 +44,16 @@ agent::agent(int ID,
     // Create the ball
     setFillColor( ballColor );
 
-    float hipotenusaExterna = sqrt( 2*qPow(spriteSize/2,2) );
-    float hipotenusaInterna = sqrt( 2*qPow(radius,2) );
-
-    oring = hipotenusaExterna < hipotenusaInterna ?
-                            hipotenusaInterna-hipotenusaExterna:
-                            hipotenusaExterna-hipotenusaInterna;
-
-    //oring = qPow( qPow(oring,2)/2 ,0.5f)*(hipotenusaExterna > hipotenusaInterna ? 1:-1);
-
     oring = spriteSize/2;
-    /*this->posIni = sf::Vector2f(posIni.x * spriteSize + oring,
-                                posIni.y * spriteSize + oring);*/
+
+    posIni = entornoGrafico::mapa::inicio_Point;
 
     this->posIni = sf::Vector2f(posIni.x * spriteSize + oring,
                                 posIni.y * spriteSize + oring);
 
-    setOrigin(radius,radius);
-
     setPosition(this->posIni);
+
+    setOrigin(radius,radius);
 
     //setOrigin( oring,oring  );
     setRadius(radius);
@@ -74,6 +63,7 @@ agent::agent(int ID,
     destinoShape.setRadius( radius );
     destinoShape.setFillColor( sf::Color( 0, 255, 0, 20 ) );
 
+    posGoal = sf::Vector2f(-1,-1);
     set_goal( posGoal );
 
     calculateP();
@@ -119,6 +109,9 @@ float agent::getRadioCompleto()
 void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
                                 float timeStep)
 { 
+    if(posGoal == sf::Vector2f(-1,-1))
+        return;
+
     calculateVL(velocity, timeStep);
     calculateTeta(velocity,timeStep);
     calculateP();
@@ -182,14 +175,10 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
 
 void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
 {
-  /* float w;
-   w = v.x() == 0 ? 0:atan(v.y()/v.x())*180/M_PI;
-   //teta = w;*/
     float deltaT = timeStep/100;
     float w = (vR_linear - vL_linear)/L;
 
-   teta = teta + w*deltaT;
-
+    teta = teta + w*deltaT;
 }
 
 void agent::draw(::simulacion *m)

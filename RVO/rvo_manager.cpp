@@ -97,8 +97,8 @@ void RVO_Manager::updateVisualization(std::vector<agents::agent *> &agentes)
     {
         for (size_t i = 0; i < sim->getNumAgents(); ++i)
             ((agents::agent *) agentes.at(i))->calculateVelocities( sim->getAgentPosition(i),
-                                                                    sim->getAgentVelocity(i),
-                                                                    sim->getTimeStep());
+                                                                        sim->getAgentVelocity(i),
+                                                                        sim->getTimeStep());
         setPreferredVelocities(agentes);
 
         sim->doStep();
@@ -129,6 +129,9 @@ void RVO_Manager::setPreferredVelocities(std::vector<agents::agent *> agentes)
     for (int i = 0; i < static_cast<int>(sim->getNumAgents()); ++i)
     {
         RVO::Vector2 goal = agentes.at(i)->get_goal_RVO();
+
+        if(goal == RVO::Vector2(-1,-1) )
+            continue;
 
         RVO::Vector2 goalVector = goal - sim->getAgentPosition(i);
 

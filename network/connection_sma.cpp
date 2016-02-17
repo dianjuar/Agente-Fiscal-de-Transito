@@ -14,7 +14,7 @@ void SMA::dataAnalizer(QString msj)
     QString encabezado = msjDividido.at(0);
     QString cuerpo = msjDividido.at(1);
 
-    if( QString::compare(encabezado, network::mensajes::SMAtoMe_ExistenseNotification, Qt::CaseInsensitive) )
+    if( QString::compare(encabezado, network::mensajes::SMAtoMe_ExistenseNotification, Qt::CaseInsensitive)==0 )
     {
         int ID = cuerpo.split( network::mensajes::divisor_2, QString::SkipEmptyParts ).at(0).toInt();
         int direccion = cuerpo.split( network::mensajes::divisor_2, QString::SkipEmptyParts ).at(1).toInt();

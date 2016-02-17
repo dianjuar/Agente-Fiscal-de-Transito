@@ -22,6 +22,8 @@ namespace agents
 
 class agentManager: public QObject
 {
+    Q_OBJECT
+
     network::connections::SMA *connection_sma;
 
 public slots:
