@@ -17,7 +17,7 @@ agent::agent(int ID,
                 vL_linear(0), vR_linear(0)
 {
     float spriteSize = entornoGrafico::mapa::spriteSize;
-    teta = direccion*(M_PI/4);
+    teta = direccion*(M_PI/4)-(M_PI/2);
 
     radius = entornoGrafico::mapa::medidaReal2Pixel(13.5f);
     zonaSegura = entornoGrafico::mapa::medidaReal2Pixel(4.f);
