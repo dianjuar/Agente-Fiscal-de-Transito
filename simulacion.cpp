@@ -68,8 +68,11 @@ void simulacion::draw()
     {
         mapa->drawMapa( this );
 
-        for(auto *agente : aManager->agentes)
+        for(agents::agent *agente : aManager->agentes)
+        {
             agente->draw(this);
+            qDebug()<<agente->ID<<agente->getPosition().x<<agente->getPosition().y;
+        }
     }
 }
 

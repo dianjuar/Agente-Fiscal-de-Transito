@@ -16,7 +16,7 @@ agent::agent(int ID,
                 direccion(direccionInicial),
                 vL_linear(0), vR_linear(0)
 {
-    float spriteSize = entornoGrafico::mapa::medidaReal2Pixel( entornoGrafico::mapa::spriteSize );
+    float spriteSize = entornoGrafico::mapa::spriteSize;
     teta = direccion*(M_PI/4);
 
     radius = entornoGrafico::mapa::medidaReal2Pixel(13.5f);
@@ -51,11 +51,9 @@ agent::agent(int ID,
     this->posIni = sf::Vector2f(posIni.x * spriteSize + oring,
                                 posIni.y * spriteSize + oring);
 
+    setOrigin(radius,radius);
     setPosition(this->posIni);
 
-    setOrigin(radius,radius);
-
-    //setOrigin( oring,oring  );
     setRadius(radius);
     setOutlineThickness(zonaSegura);
     setOutlineColor( sf::Color(0,0,255,63) );
