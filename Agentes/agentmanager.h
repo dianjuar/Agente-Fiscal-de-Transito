@@ -13,6 +13,7 @@ namespace network
     namespace connections
     {
         class SMA;
+        class ACO;
     }
 }
 //------prototyping-------
@@ -24,13 +25,17 @@ class agentManager: public QObject
 {
     Q_OBJECT
 
-    network::connections::SMA *connection_sma;
+    network::connections::SMA *sma;
+    network::connections::ACO *aco;
 
 public slots:
     void newAgente(int ID, int direccion);
+    void newStep(int ID, int direccion, float distancia,
+                 int newPos_X, int newPos_Y);
 
 public:
-    explicit agentManager(network::connections::SMA *connection_sma);
+    explicit agentManager(network::connections::SMA *sma,
+                          network::connections::ACO *aco);
 
     std::vector<agent*> agentes;
     void addAgent( agent *a );

@@ -9,17 +9,20 @@
 #include "headers/opencv_stuff.h"
 #include "Tools/math.h"
 #include "simulacion.h"
+#include "network/connection_sma.h"
 
 class simulacion;
 
 namespace agents
 {
-class agentPath;
 
 class agent: public QObject,
              public sf::CircleShape
 {
     Q_OBJECT
+
+    network::connections::ACO *aco;
+    network::connections::SMA *sma;
 
     sf::Color ballColor;
     float oring;
@@ -67,7 +70,10 @@ public:
     sf::CircleShape destinoShape;
     sf::Vertex *lineaDestino;
 
-        agent(int ID, int direccionInicial = 0.0f);
+    //constructor
+    agent(int ID,
+          network::connections::ACO *aco, network::connections::SMA *sma,
+          int direccionInicial = 0.0f);
 
     void updateLineTrayectoria();
     void set_goal(sf::Vector2f posGoal );
@@ -84,6 +90,8 @@ public:
     void update();
 
     void reachedGoal();
+
+    void newStep(int direccion, float distancia, sf::Vector2f newPos);
 };
 
 

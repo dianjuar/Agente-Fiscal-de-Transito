@@ -35,7 +35,7 @@ class simulacion : public QSFMLCanvas
 public:
     simulacion(QWidget* Parent, const QPoint& Position, const QSize& Size,
                QString map, float dist,
-               network::connections::SMA *connection_SMA);
+               network::connections::SMA *sma, network::connections::ACO *aco);
 
     void OnInit();
     void draw();
@@ -54,7 +54,9 @@ public slots:
 private :
     sf::Texture libreTex, obstTex, inicioTex, llegadaTex;
 
-    network::connections::SMA *connection_SMA;
+    network::connections::SMA *sma;
+    network::connections::ACO *aco;
+
     entornoGrafico::mapa *mapa;
 
     agents::agentManager *aManager;

@@ -9,12 +9,14 @@ float agent::D = 0;
 float agent::L = 0;
 float agent::wheelRadius = 0;
 
-agent::agent(int ID,
+agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *sma,
              int direccionInicial):
                 QObject(),
                 ID(ID),
                 direccion(direccionInicial),
-                vL_linear(0), vR_linear(0)
+                vL_linear(0), vR_linear(0),
+                aco(aco),
+                sma(sma)
 {
     float spriteSize = entornoGrafico::mapa::spriteSize;
     teta = direccion*(M_PI/4)-(M_PI/2);
@@ -68,6 +70,9 @@ agent::agent(int ID,
     p_grap.setRadius(4);
     p_grap.setFillColor(sf::Color::Black);
     p_grap.setOrigin( p_grap.getRadius()*1.5, p_grap.getRadius()*1.5 );
+
+    //solicitad por primera vez un movimiento.
+    aco->solicitarSiguientePaso(ID);
 }
 
 void agent::updateLineTrayectoria()
@@ -190,4 +195,13 @@ void agent::reachedGoal()
     emit velocidadesCalculadas(ID,
                                0,
                                0);
+}
+
+void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
+{
+    int grados = ::tools::math::cuantosGradosGiraryHaciaDonde(this->direccion, direccion);
+    sma->sendRotation( ID, grados );
+
+    this->direccion = direccion;
+
 }

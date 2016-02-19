@@ -43,8 +43,8 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    ::network::connections::SMA *C_SMA;
-    ::network::connections::ACO *C_ACO;
+    ::network::connections::SMA *sma;
+    ::network::connections::ACO *aco;
 };
 
 #endif // MAINWINDOW_H

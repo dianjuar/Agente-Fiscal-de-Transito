@@ -26,6 +26,7 @@ namespace network
 
         public slots:
             void enviarVelocidades(int ID, float Vl, float Vr);
+            void sendRotation(int ID, int grados);
         };
     }
 }

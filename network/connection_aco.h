@@ -4,6 +4,7 @@
 #include "network/MultiPropuseSockets.h"
 #include "network/puertos.h"
 #include "network/mensajes.h"
+#include "headers/sfml_stuff.h"
 
 namespace network
 {
@@ -20,8 +21,13 @@ namespace network
 
         void dataAnalizer(QString msj);
 
+    public slots:
+        void solicitarSiguientePaso(int ID);
+
     signals:
         void llego_datosEntornoGrafico(QString map, float dist);
+        void newStep(int ID, int direccion, float distancia,
+                     int newPos_X, int newPos_Y);
 
     };
 

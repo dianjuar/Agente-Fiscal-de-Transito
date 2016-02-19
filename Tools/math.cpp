@@ -237,3 +237,55 @@ void math::printMat(cv::Mat m)
     }
     qDebug()<<"....";
 }
+
+
+int math::pasosParaLlegarA(int mirada, int miradaNueva, bool horario)
+{
+    int cont = 0;
+
+    if(horario)
+        for (int i = 0; i < 8; i++)
+        {
+            if(mirada == miradaNueva)
+                break;
+
+            mirada++;
+            cont++;
+
+            if(mirada == 8)
+                mirada=0;
+        }
+    else
+        for (int i = 8; i >= 0; i--)
+        {
+            if(mirada == miradaNueva)
+                break;
+
+            mirada--;
+            cont++;
+
+            if(mirada == -1)
+                mirada = 7;
+        }
+
+    return cont;
+}
+
+
+int math::cuantosGradosGiraryHaciaDonde(int mirada, int miradaNueva)
+{
+    int grados = 0;
+
+    if(mirada != miradaNueva)
+    {
+        int pasosH = pasosParaLlegarA(mirada, miradaNueva, true);
+        int pasosAH = pasosParaLlegarA(mirada, miradaNueva, false);
+
+        int pasos = pasosH < pasosAH ? pasosH:pasosAH;
+
+        grados = pasos*45  * (pasosH < pasosAH ? -1:1);
+
+    }
+
+    return grados;
+}

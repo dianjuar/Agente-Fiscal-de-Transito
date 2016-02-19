@@ -6,15 +6,15 @@ MainWindow::MainWindow(network::connections::SMA *sma,
                        QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    C_ACO(aco),
-    C_SMA(sma)
+    aco(aco),
+    sma(sma)
 {
     ui->setupUi(this);
 
     //Create a SFML view inside the main frame
     simulacion* sm = new simulacion(get_container(), QPoint(0, 0), get_container()->size(),
                                     map,dist,
-                                    C_SMA);
+                                    sma,aco);
     sm->show();
 }
 

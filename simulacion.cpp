@@ -2,13 +2,16 @@
 
 
 simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Size,
-                       QString map, float dist, network::connections::SMA *connection_SMA):
+                       QString map, float dist,
+                       network::connections::SMA *sma,
+                       network::connections::ACO *aco):
     QSFMLCanvas(Parent, Position, Size),
     numeroMaximoPath(0),
     printed_V_MIN_MAX(false),
     tiempoTranscurrido(0),
     fullyLoaded(false),
-    connection_SMA(connection_SMA),
+    sma(sma),
+    aco(aco),
     map(map),
     dist(dist)
 {
@@ -20,8 +23,7 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
     float maxVelocity = 0.1;
     rvo  = new RVO_Manager(globalTime, maxVelocity);
 
-    aManager = new agents::agentManager(connection_SMA);
-
+    aManager = new agents::agentManager(sma,aco);
 }
 
 void simulacion::OnInit()
@@ -69,22 +71,19 @@ void simulacion::draw()
         mapa->drawMapa( this );
 
         for(agents::agent *agente : aManager->agentes)
-        {
             agente->draw(this);
-            qDebug()<<agente->ID<<agente->getPosition().x<<agente->getPosition().y;
-        }
     }
 }
 
 void simulacion::update(float deltaTime, float currentTime)
 {   
-    /*if(connection_SMA->isConnected() && aManager->agentes.size()!=0)
+    if(sma->isConnected() && aManager->agentes.size()!=0)
     {
         rvo->updateVisualization(aManager->agentes);
 
         float delay = (rvo->sim->getGlobalTime()/100.f)-currentTime;
         QThread::sleep( delay < 0 ? 0:delay );
-    }*/
+    }
 }
 
 void simulacion::inicioDeLaSimulacion()

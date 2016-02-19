@@ -15,12 +15,19 @@ namespace network
 
         //Mensajes To SMA
         const QString MeToSMA_Velocidades = "VelLR";
+        const QString MeToSMA_Rotation = "Rot";
 
         //Mensajes From SMA
         const QString SMAtoMe_ExistenseNotification = "here";
 
+        //---------------------------------------
+
         //Mensajes from ACO
         const QString ACOtoMe_EnviromentInfo = "EnvInfo";
+        const QString ACOtoMe_NextStep = "nextS";
+
+        //Mensaje to ACO
+        const QString meToACO_SiguientePaso = "nextS";
     }
 }
 
