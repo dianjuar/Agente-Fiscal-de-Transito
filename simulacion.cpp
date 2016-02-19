@@ -21,9 +21,12 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
 
     float globalTime = 5;
     float maxVelocity = 0.1;
-    rvo  = new RVO_Manager(globalTime, maxVelocity);
-
     aManager = new agents::agentManager(sma,aco);
+
+    rvo  = new RVO_Manager(&aManager->agentes,globalTime, maxVelocity);
+
+    connect( aManager, SIGNAL(newAgenteAdded()),
+             rvo, SLOT(add_UltimoAgente()) );
 }
 
 void simulacion::OnInit()
@@ -56,7 +59,6 @@ void simulacion::setInformacionGrafica(QString map, float dist)
                                      libreTex, obstTex, inicioTex, llegadaTex  );
 
     rvo->setupScenario( mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),
-                        &aManager->agentes,
                         mapa->obstaculos);
 
     emit IHaveWhatINeed( waitingDialog::Req_InfEnv );
@@ -77,12 +79,12 @@ void simulacion::draw()
 
 void simulacion::update(float deltaTime, float currentTime)
 {   
-    if(sma->isConnected() && aManager->agentes.size()!=0)
+    if(aManager->agentes.size()!=0)
     {
-        rvo->updateVisualization(aManager->agentes);
+        rvo->updateVisualization();
 
         float delay = (rvo->sim->getGlobalTime()/100.f)-currentTime;
-        QThread::sleep( delay < 0 ? 0:delay );
+        //QThread::sleep( delay < 0 ? 0:delay );
     }
 }
 

@@ -11,7 +11,18 @@
 #include "simulacion.h"
 #include "network/connection_sma.h"
 
+//----------prototyping----------------
 class simulacion;
+
+namespace network
+{
+    namespace connections
+    {
+        class SMA;
+        class ACO;
+    }
+}
+//----------prototyping----------------
 
 namespace agents
 {
@@ -25,14 +36,21 @@ class agent: public QObject,
     network::connections::SMA *sma;
 
     sf::Color ballColor;
+
+    int pasos;
+    bool sended;
+
     float oring;
 
     void calculateVL(RVO::Vector2 velocity, float timeStep);
     void calculateTeta(RVO::Vector2 velocity, float timeStep);
+    void set_RealP_Based_LogicalP(sf::Vector2f &real_P, sf::Vector2f logial_P);
+
+    void setDireccion(int newDireccion, bool enviarSMA = false);
 
 signals:
     void velocidadesCalculadas(int ID, float VL, float VR);
-
+    void solicitarNuevaVelocidad();
 
 public:
     enum
@@ -89,12 +107,11 @@ public:
     void draw(::simulacion *m);
     void update();
 
-    void reachedGoal();
+    void solicitar_NewStep();
 
     void newStep(int direccion, float distancia, sf::Vector2f newPos);
+    bool isSended();
 };
-
-
 
 }//namespace
 

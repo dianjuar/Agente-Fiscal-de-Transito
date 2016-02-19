@@ -16,10 +16,11 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
                 direccion(direccionInicial),
                 vL_linear(0), vR_linear(0),
                 aco(aco),
-                sma(sma)
+                sma(sma),
+                pasos(0),
+                sended(false)
 {
-    float spriteSize = entornoGrafico::mapa::spriteSize;
-    teta = direccion*(M_PI/4)-(M_PI/2);
+    setDireccion(direccionInicial);
 
     radius = entornoGrafico::mapa::medidaReal2Pixel(13.5f);
     zonaSegura = entornoGrafico::mapa::medidaReal2Pixel(4.f);
@@ -46,12 +47,10 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
     // Create the ball
     setFillColor( ballColor );
 
-    oring = spriteSize/2;
+    oring = entornoGrafico::mapa::spriteSize/2;
 
-    posIni = entornoGrafico::mapa::inicio_Point;
+    set_RealP_Based_LogicalP(posIni, entornoGrafico::mapa::inicio_Point);
 
-    this->posIni = sf::Vector2f(posIni.x * spriteSize + oring,
-                                posIni.y * spriteSize + oring);
 
     setOrigin(radius,radius);
     setPosition(this->posIni);
@@ -112,7 +111,7 @@ float agent::getRadioCompleto()
 void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
                                 float timeStep)
 { 
-    if(posGoal == sf::Vector2f(-1,-1))
+    if( posGoal == sf::Vector2f(-1,-1) )
         return;
 
     calculateVL(velocity, timeStep);
@@ -120,7 +119,7 @@ void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
     calculateP();
     //qDebug()<<"***********************";
 
-    setPosition( position.x(), position.y()  );
+    setPosition( position.x(), position.y() );
 }
 
 void agent::calculateP()
@@ -184,24 +183,43 @@ void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
     teta = teta + w*deltaT;
 }
 
+void agent::set_RealP_Based_LogicalP(sf::Vector2f &real_P, sf::Vector2f logial_P)
+{
+    real_P = sf::Vector2f(logial_P.x * entornoGrafico::mapa::spriteSize + oring,
+                          logial_P.y * entornoGrafico::mapa::spriteSize + oring);
+}
+
 void agent::draw(::simulacion *m)
 {
     m->RenderWindow::draw(*this);
     m->RenderWindow::draw( p_grap );
 }
 
-void agent::reachedGoal()
+void agent::solicitar_NewStep()
 {
-    emit velocidadesCalculadas(ID,
-                               0,
-                               0);
+    sended = true;
+    aco->solicitarSiguientePaso(ID);
+}
+
+void agent::setDireccion(int newDireccion, bool enviarSMA)
+{
+    direccion = newDireccion;
+    teta = direccion*(M_PI/4)-(M_PI/2);
+
+    int grados = ::tools::math::cuantosGradosGiraryHaciaDonde(this->direccion, newDireccion);
+
+    if(enviarSMA)
+        sma->sendRotation( ID, grados );
 }
 
 void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
 {
-    int grados = ::tools::math::cuantosGradosGiraryHaciaDonde(this->direccion, direccion);
-    sma->sendRotation( ID, grados );
+    sended = false;
+    setDireccion(direccion);
+    set_RealP_Based_LogicalP( posGoal, newPos );
+}
 
-    this->direccion = direccion;
-
+bool agent::isSended()
+{
+    return sended;
 }

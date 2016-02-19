@@ -38,7 +38,7 @@ void ACO::dataAnalizer(QString msj)
 
             int ID          = msjs[0].toInt();
             int direccion   = msjs[1].toInt();
-            float distancia = msjs[2].toFloat();
+            float distancia = msjs[2].toFloat()*100;
             int newPos_X    = msjs[3].toInt();
             int newPos_Y    = msjs[4].toInt();
 

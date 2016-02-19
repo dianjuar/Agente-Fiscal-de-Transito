@@ -21,7 +21,6 @@ class RVO_Manager: public QObject
 {
     Q_OBJECT
 
-
     float maxAgents;
     float timeHorizon;
     float timeHorizonObst;
@@ -29,9 +28,13 @@ class RVO_Manager: public QObject
     float maxSpeed;
 
     std::vector<agents::agent *> *agentes;
+    void reachedGoal();
 
 signals:
-    //void agentsHaveReachedTheirGoal();
+    void agentsHaveReachedTheirGoal();
+
+public slots:
+    void add_UltimoAgente();
 
 public:
 
@@ -42,23 +45,14 @@ public:
 
     RVO::RVOSimulator *sim;
 
-    bool haveReachedTheirGoal;
-
-    RVO_Manager(RVO::RVOSimulator *sim);
-    RVO_Manager(float radius, std::vector<agents::agent*> agentes,
-                std::vector<entornoGrafico::obstaculo> listaObst);
-    RVO_Manager(float timeStep, float maxVelocity);
+    RVO_Manager(std::vector<agents::agent *> *agentes, float timeStep, float maxVelocity);
 
     void add_obstacles( std::vector<entornoGrafico::obstaculo> listaObst );
-    void add_agentes();
 
-    void setupScenario(float radius, std::vector<agents::agent *> *agentes, std::vector<entornoGrafico::obstaculo> listaObst);
+    void setupScenario(float radius, std::vector<entornoGrafico::obstaculo> listaObst);
 
-    void updateVisualization(std::vector<agents::agent *> &agentes);
-    void setPreferredVelocities(std::vector<agents::agent*> agentes);
-
-private:
-    bool reachedGoal(std::vector<agents::agent*> &agentes);
+    void updateVisualization();
+    void setPreferredVelocities();
 };
 
 #endif // RVO_H
