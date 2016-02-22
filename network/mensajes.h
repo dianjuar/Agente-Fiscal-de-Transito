@@ -25,6 +25,7 @@ namespace network
         //Mensajes from ACO
         const QString ACOtoMe_EnviromentInfo = "EnvInfo";
         const QString ACOtoMe_NextStep = "nextS";
+        const QString ACOtoMe_setVelocidad = "SVel";
 
         //Mensaje to ACO
         const QString meToACO_SiguientePaso = "nextS";

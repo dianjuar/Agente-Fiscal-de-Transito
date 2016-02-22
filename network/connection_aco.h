@@ -28,6 +28,7 @@ namespace network
         void llego_datosEntornoGrafico(QString map, float dist);
         void newStep(int ID, int direccion, float distancia,
                      int newPos_X, int newPos_Y);
+        void newVelocity(float v);
 
     };
 

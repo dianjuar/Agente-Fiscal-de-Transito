@@ -35,6 +35,7 @@ signals:
 
 public slots:
     void add_UltimoAgente();
+    void setVelocidad(float v);
 
 public:
 
@@ -45,7 +46,14 @@ public:
 
     RVO::RVOSimulator *sim;
 
-    RVO_Manager(std::vector<agents::agent *> *agentes, float timeStep, float maxVelocity);
+    ///
+    /// \brief RVO_Manager constructor de la case
+    /// \param agentes. Lista donde se almacenan las agentes.
+    /// \param timeStep. Tiempo de la simulacion. En centecimas de segundo
+    /// \param velocity. Velocidad en cm/s
+    ///
+    RVO_Manager(std::vector<agents::agent *> *agentes,
+                float timeStep = 5.f , float velocity=15.f);
 
     void add_obstacles( std::vector<entornoGrafico::obstaculo> listaObst );
 

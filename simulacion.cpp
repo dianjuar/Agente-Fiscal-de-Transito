@@ -19,14 +19,15 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
     radioReal = 13.5f;
     zonaSeguraReal = 4.f;
 
-    float globalTime = 5;
-    float maxVelocity = 21.6;
     aManager = new agents::agentManager(sma,aco);
 
-    rvo  = new RVO_Manager(&aManager->agentes,globalTime, maxVelocity);
+    rvo  = new RVO_Manager(&aManager->agentes);
 
     connect( aManager, SIGNAL(newAgenteAdded()),
              rvo, SLOT(add_UltimoAgente()) );
+
+    connect( aco, SIGNAL(newVelocity(float)),
+             rvo, SLOT(setVelocidad(float)) );
 }
 
 void simulacion::OnInit()
@@ -84,7 +85,7 @@ void simulacion::update(float deltaTime, float currentTime)
         rvo->updateVisualization();
 
         float delay = (rvo->sim->getGlobalTime()/100.f)-currentTime;
-        //QThread::sleep( delay < 0 ? 0:delay );
+        QThread::sleep( delay < 0 ? 0:delay );
     }
 }
 

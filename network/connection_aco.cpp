@@ -23,8 +23,6 @@ void ACO::dataAnalizer(QString msj)
         QString encabezado = msjDividido.at(0);
         QString cuerpo = msjDividido.at(1);
 
-        qDebug()<<encabezado;
-
         if( QString::compare(encabezado, mensajes::ACOtoMe_EnviromentInfo, Qt::CaseInsensitive) == 0 )
         {
             QString map = cuerpo.split( mensajes::divisor_2, QString::SkipEmptyParts )[0];
@@ -43,6 +41,10 @@ void ACO::dataAnalizer(QString msj)
             int newPos_Y    = msjs[4].toInt();
 
             emit newStep(ID,direccion,distancia,newPos_X,newPos_Y);
+        }
+        else if( QString::compare(encabezado, mensajes::ACOtoMe_setVelocidad, Qt::CaseInsensitive) == 0 )
+        {
+            emit newVelocity( cuerpo.toFloat() );
         }
     }
 }

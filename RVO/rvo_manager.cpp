@@ -4,14 +4,14 @@ float RVO_Manager::TimeStep_real = 0;
 
 //este es el que estoy usando
 RVO_Manager::RVO_Manager(std::vector<agents::agent *> *agentes,
-                         float timeStep, float maxVelocity):
+                         float timeStep, float velocity):
     agentes(agentes),
     maxAgents(1),
     timeHorizon(5),
     timeHorizonObst(5)
 {
     this->timeStep = timeStep;
-    maxSpeed = maxVelocity;
+    maxSpeed = (velocity*2.44)/100.f;
     sim = new RVO::RVOSimulator();
 
     TimeStep_real = timeStep*100;
@@ -30,6 +30,12 @@ void RVO_Manager::add_UltimoAgente()
     agents::agent *ultimoA =  agentes->back();
     sim->addAgent(  RVO::Vector2(ultimoA->posIni.x, ultimoA->posIni.y) );
 
+}
+
+void RVO_Manager::setVelocidad(float v)
+{
+    for(int i=0; i < agentes->size(); i++ )
+        sim->setAgentMaxSpeed(i, (v*2.44)/100.f);
 }
 
 void RVO_Manager::setupScenario(float radius,
