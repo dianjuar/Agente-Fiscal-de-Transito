@@ -110,3 +110,8 @@ void RVO_Manager::setPreferredVelocities(std::vector<agents::agent *> agentes)
 
 }
 
+float RVO_Manager::get_maxSpeed()
+{
+    return maxSpeed;
+}
+

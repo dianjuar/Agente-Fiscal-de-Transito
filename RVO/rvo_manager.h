@@ -52,6 +52,8 @@ public:
     void updateVisualization(std::vector<agents::agent *> &agentes);
     void setPreferredVelocities(std::vector<agents::agent*> agentes);
 
+    float get_maxSpeed();
+
 private:
     bool reachedGoal(std::vector<agents::agent*> &agentes);
 };

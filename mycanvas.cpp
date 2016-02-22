@@ -11,7 +11,7 @@ MyCanvas::MyCanvas(QWidget* Parent, const QPoint& Position, const QSize& Size):
     zonaSeguraReal = 4.f;
 
     float globalTime = 5;
-    float maxVelocity = 0.1;
+    float maxVelocity = 66.f/100.f;
     rvo  = new RVO_Manager(globalTime, maxVelocity);
 
     connection_SMA = new network::connections::SMA();
@@ -80,7 +80,18 @@ void MyCanvas::update(float deltaTime, float currentTime)
 
         if( rvo->haveReachedTheirGoal )
         {
-            qDebug()<<"Time RVO:"<<rvo->sim->getGlobalTime()/100<<"       Time real"<<currentTime+delay;
+
+            qDebug()<<"***********";
+            qDebug()<<"Max speed"<<rvo->get_maxSpeed()*100;
+            qDebug()<<"Velocidad Linear"<<((agents::agent*) aManager->agentes[0])->vL_linear;
+            qDebug()<<"Tiempo teorico ="<<map_longitudPorCuadro_REAL/aManager->agentes[0]->vL_linear<<
+                      "      ------ Tiempo Real"<<currentTime+delay;
+            qDebug()<<"Tiempo teorico ="<<map_longitudPorCuadro_REAL/aManager->agentes[0]->vL_linear<<
+                      "      ------ Tiempo Real"<<currentTime+delay;
+            qDebug()<<"Realcion:"<<aManager->agentes[0]->vL_linear/rvo->get_maxSpeed();
+            //qDebug()<<"Time RVO:"<<rvo->sim->getGlobalTime()/100<<"       Time real"<<currentTime+delay;
+
+            exit(EXIT_SUCCESS);
         }
     }
 }
@@ -92,10 +103,10 @@ void MyCanvas::inicioDeLaSimulacion()
 
 void MyCanvas::setup_agentes()
 {
-   agents::agent *a1 = new agents::agent( 1,
+    agents::agent *a1 = new agents::agent( 1,
                                            sf::Vector2f( 2,
                                                          3),
-                                           sf::Vector2f( 5,
+                                           sf::Vector2f( 3,
                                                          3),
                                            mapa->spriteSize,
                                            0.f,
@@ -103,7 +114,7 @@ void MyCanvas::setup_agentes()
     aManager->addAgent(a1);
 
 
-    //agente 2
+   /* //agente 2
     agents::agent *a2 = new agents::agent( 2,
                                            sf::Vector2f( 5,
                                                          3),
@@ -112,7 +123,7 @@ void MyCanvas::setup_agentes()
                                            mapa->spriteSize,
                                            180,
                                            sf::Color::Yellow);
-    aManager->addAgent(a2);
+    aManager->addAgent(a2);*/
 
     //agente 3
    /* agents::agent *a3 = new agents::agent( sf::Vector2f( 4,
