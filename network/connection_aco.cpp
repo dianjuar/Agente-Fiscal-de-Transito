@@ -51,7 +51,7 @@ void ACO::dataAnalizer(QString msj)
 
 void ACO::solicitarSiguientePaso(int ID)
 {
-    write(network::mensajes::meToACO_SiguientePaso +
+    write(network::mensajes::MeToACO_SiguientePaso +
           network::mensajes::divisor + QString::number(ID));
 }
 

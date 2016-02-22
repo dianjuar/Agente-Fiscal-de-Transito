@@ -21,7 +21,7 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
 
     aManager = new agents::agentManager(sma,aco);
 
-    rvo  = new RVO_Manager(&aManager->agentes);
+    rvo  = new RVO_Manager(aManager);
 
     connect( aManager, SIGNAL(newAgenteAdded()),
              rvo, SLOT(add_UltimoAgente()) );
@@ -73,14 +73,14 @@ void simulacion::draw()
     {
         mapa->drawMapa( this );
 
-        for(agents::agent *agente : aManager->agentes)
+        for(agents::agent *agente : aManager->getAgentes())
             agente->draw(this);
     }
 }
 
 void simulacion::update(float deltaTime, float currentTime)
 {   
-    if(aManager->agentes.size()!=0)
+    if(aManager->getAgentes().size()!=0)
     {
         rvo->updateVisualization();
 

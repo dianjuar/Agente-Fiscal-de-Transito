@@ -38,7 +38,9 @@ class agent: public QObject,
     sf::Color ballColor;
 
     int pasos;
-    bool sended;
+    int Npasos_solicitudCDT;
+    bool sended_NextStep;
+    bool sended_CRT;
 
     float oring;
 
@@ -110,7 +112,8 @@ public:
     void solicitar_NewStep();
 
     void newStep(int direccion, float distancia, sf::Vector2f newPos);
-    bool isSended();
+
+    bool isAvaliable();
 };
 
 }//namespace

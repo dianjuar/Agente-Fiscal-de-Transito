@@ -2,12 +2,13 @@
 #define RVO_H
 
 #include "entornografico.h"
-#include "Agentes/agent.h"
+#include "Agentes/agentmanager.h"
 
 //------------prototyping------------
 namespace agents
 {
     class agent;
+    class agentManager;
 }
 
 namespace entornoGrafico
@@ -27,8 +28,8 @@ class RVO_Manager: public QObject
     float timeStep;
     float maxSpeed;
 
-    std::vector<agents::agent *> *agentes;
-    void reachedGoal();
+    agents::agentManager *aManager;
+    void reachedGoal(std::vector<agents::agent *> agentesDisponibles);
 
 signals:
     void agentsHaveReachedTheirGoal();
@@ -52,7 +53,7 @@ public:
     /// \param timeStep. Tiempo de la simulacion. En centecimas de segundo
     /// \param velocity. Velocidad en cm/s
     ///
-    RVO_Manager(std::vector<agents::agent *> *agentes,
+    RVO_Manager(agents::agentManager  *aManager,
                 float timeStep = 5.f , float velocity=15.f);
 
     void add_obstacles( std::vector<entornoGrafico::obstaculo> listaObst );
@@ -60,7 +61,7 @@ public:
     void setupScenario(float radius, std::vector<entornoGrafico::obstaculo> listaObst);
 
     void updateVisualization();
-    void setPreferredVelocities();
+    void setPreferredVelocities(std::vector<agents::agent *> agentesDisponibles);
 };
 
 #endif // RVO_H

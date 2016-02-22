@@ -21,6 +21,10 @@ void SMA::dataAnalizer(QString msj)
 
         emit newAgente(ID, direccion);
     }
+    else if(QString::compare(encabezado, network::mensajes::SMAtoMe_CDT_Terminada, Qt::CaseInsensitive)==0 )
+    {
+
+    }
 }
 
 void SMA::enviarVelocidades(int ID, float Vl, float Vr)
@@ -36,3 +40,7 @@ void SMA::sendRotation(int ID, int grados)
            QString::number(ID) + mensajes::divisor_2 + QString::number(grados) );
 }
 
+void SMA::solicitarCDT(int ID)
+{
+    write( mensajes::MeToSMA_CDT+mensajes::divisor+QString::number(ID) );
+}

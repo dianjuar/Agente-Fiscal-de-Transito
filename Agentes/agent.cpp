@@ -17,8 +17,8 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
                 vL_linear(0), vR_linear(0),
                 aco(aco),
                 sma(sma),
-                pasos(0),
-                sended(false)
+                pasos(0), Npasos_solicitudCDT(5),
+                sended_NextStep(false), sended_CRT(false)
 {
     setDireccion(direccionInicial);
 
@@ -197,8 +197,16 @@ void agent::draw(::simulacion *m)
 
 void agent::solicitar_NewStep()
 {
-    sended = true;
-    aco->solicitarSiguientePaso(ID);
+    sended_NextStep = true;
+    pasos++;
+
+    if(pasos < Npasos_solicitudCDT)
+        aco->solicitarSiguientePaso(ID);
+    else
+    {
+        pasos = 0;
+        sma->solicitarCDT(ID);
+    }
 }
 
 void agent::setDireccion(int newDireccion, bool enviarSMA)
@@ -214,12 +222,15 @@ void agent::setDireccion(int newDireccion, bool enviarSMA)
 
 void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
 {
-    sended = false;
+    sended_NextStep = false;
     setDireccion(direccion);
     set_RealP_Based_LogicalP( posGoal, newPos );
 }
 
-bool agent::isSended()
+bool agent::isAvaliable()
 {
-    return sended;
+    if( sended_NextStep )
+        return false;
+
+    return true;
 }
