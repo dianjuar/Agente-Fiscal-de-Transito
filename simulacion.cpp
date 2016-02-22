@@ -20,7 +20,7 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
     zonaSeguraReal = 4.f;
 
     float globalTime = 5;
-    float maxVelocity = 0.1;
+    float maxVelocity = 21.6;
     aManager = new agents::agentManager(sma,aco);
 
     rvo  = new RVO_Manager(&aManager->agentes,globalTime, maxVelocity);
