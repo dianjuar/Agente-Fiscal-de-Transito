@@ -11,7 +11,7 @@ namespace network
             ///
             /// \brief Recibe_SMA - puerto por donde recibirá la información del SMA.
             ///
-            const int Recibe_SMA = 5001;
+            const int Recibe_SMA = 5004;
 
             ///
             /// \brief ACO - puerto por donde se conectará al ACO.

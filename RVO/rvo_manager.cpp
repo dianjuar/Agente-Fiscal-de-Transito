@@ -2,43 +2,6 @@
 
 float RVO_Manager::TimeStep_real = 0;
 
-RVO_Manager::RVO_Manager(RVO::RVOSimulator *sim):
-    maxAgents(3),
-    timeHorizon(5),
-    timeHorizonObst(5),
-    timeStep(0.2),
-    maxSpeed(2.f)
-{
-    this->sim = sim;
-}
-
-RVO_Manager::RVO_Manager(float radius,
-                         std::vector<agents::agent *> agentes,
-                         std::vector<entornoGrafico::obstaculo> listaObst):
-                            maxAgents(3),
-                            timeHorizon(5),
-                            timeHorizonObst(5),
-                            timeStep(0.1),
-                            maxSpeed(0.01f),
-                            haveReachedTheirGoal(false)
-{
-    sim = new RVO::RVOSimulator();
-
-    /* Specify the global time step of the simulation. */
-    sim->setTimeStep(timeStep);
-
-    /* Specify the default parameters for agents that are subsequently added. */
-    sim->setAgentDefaults( radius*2,
-                           maxAgents,
-                           timeHorizon, timeHorizonObst,
-                           radius,
-                           maxSpeed);
-
-    add_agentes(agentes);
-    add_obstacles(listaObst);
-}
-
-
 //este es el que estoy usando
 RVO_Manager::RVO_Manager(float timeStep, float maxVelocity):
     maxAgents(1),
@@ -82,7 +45,7 @@ void RVO_Manager::setupScenario(float radius, std::vector<agents::agent *> agent
     /* Specify the default parameters for agents that are subsequently added. */
     sim->setAgentDefaults( radius*(750/100),
                            maxAgents,
-                           timeHorizon, timeHorizonObst,
+                           timeHorizon*100, timeHorizonObst*100,
                            radius,
                            maxSpeed);
 

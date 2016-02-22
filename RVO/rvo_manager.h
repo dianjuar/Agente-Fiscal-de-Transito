@@ -42,9 +42,6 @@ public:
 
     bool haveReachedTheirGoal;
 
-    RVO_Manager(RVO::RVOSimulator *sim);
-    RVO_Manager(float radius, std::vector<agents::agent*> agentes,
-                std::vector<entornoGrafico::obstaculo> listaObst);
     RVO_Manager(float timeStep, float maxVelocity);
 
     void add_obstacles( std::vector<entornoGrafico::obstaculo> listaObst );
