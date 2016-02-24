@@ -18,7 +18,7 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
                 aco(aco),
                 sma(sma),
                 pasos(0), Npasos_solicitudCDT(5),
-                sended_NextStep(false), sended_CRT(false)
+                sended_NextStep(true), sended_CRT(false)
 {
     setDireccion(direccionInicial);
 
@@ -197,11 +197,13 @@ void agent::draw(::simulacion *m)
 
 void agent::solicitar_NewStep()
 {
-    sended_NextStep = true;
-    pasos++;
 
-    if(pasos < Npasos_solicitudCDT)
+    if(pasos < Npasos_solicitudCDT && !sended_NextStep)
+    {
+        sended_NextStep = true;
+        pasos++;
         aco->solicitarSiguientePaso(ID);
+    }
     else
     {
         pasos = 0;
@@ -211,20 +213,24 @@ void agent::solicitar_NewStep()
 
 void agent::setDireccion(int newDireccion, bool enviarSMA)
 {
-    direccion = newDireccion;
-    teta = direccion*(M_PI/4)-(M_PI/2);
-
-    int grados = ::tools::math::cuantosGradosGiraryHaciaDonde(this->direccion, newDireccion);
+    teta = newDireccion*(M_PI/4)-(M_PI/2);
 
     if(enviarSMA)
+    {
+        int grados = ::tools::math::cuantosGradosGiraryHaciaDonde(direccion, newDireccion);
         sma->sendRotation( ID, grados );
+    }
+
+    direccion = newDireccion;
 }
 
 void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
 {
-    sended_NextStep = false;
-    setDireccion(direccion);
+    setDireccion(direccion,true);
     set_RealP_Based_LogicalP( posGoal, newPos );
+
+    //es necesario que esté acá de último para que le de chance de enviar la rotacion.
+    sended_NextStep = false;
 }
 
 bool agent::isAvaliable()
