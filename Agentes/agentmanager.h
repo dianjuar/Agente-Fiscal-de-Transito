@@ -26,6 +26,9 @@ class agentManager: public QObject
 {
     Q_OBJECT
 
+        network::connections::SMA *sma;
+        network::connections::ACO *aco;
+
     std::vector<agent*> agentes;
     network::connections::SMA *sma;
     network::connections::ACO *aco;
