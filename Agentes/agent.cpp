@@ -18,7 +18,7 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
                 aco(aco),
                 sma(sma),
                 pasos(0),
-                sended(false)
+                sendedNexStep(true)
 {
     setDireccion(direccionInicial);
 
@@ -71,7 +71,7 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
     p_grap.setOrigin( p_grap.getRadius()*1.5, p_grap.getRadius()*1.5 );
 
     //solicitad por primera vez un movimiento.
-    aco->solicitarSiguientePaso(ID);
+    //aco->solicitarSiguientePaso(ID);
 }
 
 void agent::updateLineTrayectoria()
@@ -197,29 +197,35 @@ void agent::draw(::simulacion *m)
 
 void agent::solicitar_NewStep()
 {
-    sended = true;
+    sendedNexStep = true;
     aco->solicitarSiguientePaso(ID);
 }
 
 void agent::setDireccion(int newDireccion, bool enviarSMA)
 {
-    direccion = newDireccion;
-    teta = direccion*(M_PI/4)-(M_PI/2);
-
-    int grados = ::tools::math::cuantosGradosGiraryHaciaDonde(this->direccion, newDireccion);
+    teta = newDireccion*(M_PI/4)-(M_PI/2);
 
     if(enviarSMA)
+    {
+        int grados = ::tools::math::cuantosGradosGiraryHaciaDonde(direccion, newDireccion);
         sma->sendRotation( ID, grados );
+    }
+
+    direccion = newDireccion;
 }
 
 void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
 {
-    sended = false;
-    setDireccion(direccion);
+    setDireccion(direccion,true);
     set_RealP_Based_LogicalP( posGoal, newPos );
+
+    sendedNexStep = false;
 }
 
-bool agent::isSended()
+bool agent::isAvaliable()
 {
-    return sended;
+    if(sendedNexStep)
+        return false;
+
+    return true;
 }

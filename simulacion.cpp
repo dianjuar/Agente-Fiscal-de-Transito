@@ -21,7 +21,7 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
 
     aManager = new agents::agentManager(sma,aco);
 
-    rvo  = new RVO_Manager(&aManager->agentes);
+    rvo  = new RVO_Manager(aManager);
 
     connect( aManager, SIGNAL(newAgenteAdded()),
              rvo, SLOT(add_UltimoAgente()) );

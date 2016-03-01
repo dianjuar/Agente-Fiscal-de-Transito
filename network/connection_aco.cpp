@@ -10,7 +10,7 @@ ACO::ACO(QString add):
 
 void ACO::sendConnected()
 {
-    write("iniSMA2ACO->HowMany3_VelMax33.333_VelIni15.0");
+    write("iniSMA2ACO->HowMany3_VelMax1000_VelIni999");
 }
 
 void ACO::dataAnalizer(QString msj)

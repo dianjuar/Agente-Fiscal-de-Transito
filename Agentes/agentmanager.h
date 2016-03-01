@@ -20,28 +20,32 @@ namespace network
 
 namespace agents
 {
+    class agent;
 
-class agentManager: public QObject
-{
-    Q_OBJECT
+    class agentManager: public QObject
+    {
+        Q_OBJECT
 
-    network::connections::SMA *sma;
-    network::connections::ACO *aco;
+        network::connections::SMA *sma;
+        network::connections::ACO *aco;
 
-public slots:
-    void newAgente(int ID, int direccion);
-    void newStep(int ID, int direccion, float distancia,
-                 int newPos_X, int newPos_Y);
-signals:
-    void newAgenteAdded();
+    public slots:
+        void newAgente(int ID, int direccion);
+        void newStep(int ID, int direccion, float distancia,
+                     int newPos_X, int newPos_Y);
+    signals:
+        void newAgenteAdded();
 
-public:
-    explicit agentManager(network::connections::SMA *sma,
-                          network::connections::ACO *aco);
+    public:
+        explicit agentManager(network::connections::SMA *sma,
+                              network::connections::ACO *aco);
 
-    std::vector<agent*> agentes;
-    void addAgent( agent *a );
-};
+        std::vector<agent*> agentes;
+        void addAgent( agent *a );
+        agent *ultimoAgene();
+
+        std::vector<agents::agent *> getAgentesDisponibles();
+    };
 
 }
 

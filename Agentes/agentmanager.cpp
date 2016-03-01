@@ -34,3 +34,21 @@ void agentManager::addAgent(agent *a)
 
     agentes.push_back( a );
 }
+
+agent *agentManager::ultimoAgene()
+{
+    return agentes.back();
+}
+
+std::vector<agents::agent *> agentManager::getAgentesDisponibles()
+{
+    std::vector<agents::agent *> r;
+
+    for(agents::agent *a : agentes)
+    {
+        if(a->isAvaliable())
+            r.push_back(a);
+    }
+
+    return r;
+}

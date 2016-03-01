@@ -33,6 +33,5 @@ void SMA::enviarVelocidades(int ID, float Vl, float Vr)
 void SMA::sendRotation(int ID, int grados)
 {
     write( mensajes::MeToSMA_Rotation + mensajes::divisor +
-           QString::number(ID) + mensajes::divisor_2 + QString::number(grados) );
+           QString::number(ID) + mensajes::divisor_2 + QString::number(grados)+"\n" );
 }
-
