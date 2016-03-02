@@ -17,8 +17,8 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
                 vL_linear(0), vR_linear(0),
                 aco(aco),
                 sma(sma),
-                pasos(0), Npasos_solicitudCDT(5),
-                sended_NextStep(true), sended_CRT(false)
+                pasos(0), Npasos_solicitudCDT(3),
+                sended_NextStep(true), sended_CRT(false), waitingForCorrection(false)
 {
     setDireccion(direccionInicial);
 
@@ -62,8 +62,8 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
     destinoShape.setRadius( radius );
     destinoShape.setFillColor( sf::Color( 0, 255, 0, 20 ) );
 
-    posGoal = sf::Vector2f(-1,-1);
-    set_goal( posGoal );
+    posGoal_real = sf::Vector2f(-1,-1);
+    set_goal( posGoal_real );
 
     calculateP();
     p_grap.setRadius(4);
@@ -81,26 +81,27 @@ void agent::updateLineTrayectoria()
 
 void agent::set_goal(sf::Vector2f posGoal)
 {
-    this->posGoal = sf::Vector2f(posGoal.x*entornoGrafico::mapa::spriteSize + oring,
+    this->posGoal_digital = posGoal;
+    this->posGoal_real = sf::Vector2f(posGoal.x*entornoGrafico::mapa::spriteSize + oring,
                                  posGoal.y*entornoGrafico::mapa::spriteSize + oring);
 
-    destinoShape.setPosition( this->posGoal );
+    destinoShape.setPosition( this->posGoal_real );
 
     lineaDestino = new sf::Vertex[2];
     lineaDestino[0] = sf::Vertex( sf::Vector2f( posIni.x+radius,
                                                 posIni.y+radius ));
-    lineaDestino[1] = sf::Vertex( sf::Vector2f( this->posGoal.x+radius,
-                                                this->posGoal.y+radius));
+    lineaDestino[1] = sf::Vertex( sf::Vector2f( this->posGoal_real.x+radius,
+                                                this->posGoal_real.y+radius));
 }
 
 sf::Vector2f agent::get_goal()
 {
-    return posGoal;
+    return posGoal_real;
 }
 
 RVO::Vector2 agent::get_goal_RVO()
 {
-    return RVO::Vector2( posGoal.x, posGoal.y );
+    return RVO::Vector2( posGoal_real.x, posGoal_real.y );
 }
 
 float agent::getRadioCompleto()
@@ -111,7 +112,7 @@ float agent::getRadioCompleto()
 void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
                                 float timeStep)
 { 
-    if( posGoal == sf::Vector2f(-1,-1) )
+    if( posGoal_real == sf::Vector2f(-1,-1) )
         return;
 
     calculateVL(velocity, timeStep);
@@ -206,8 +207,9 @@ void agent::solicitar_NewStep()
     }
     else
     {
+        waitingForCorrection = true;
         pasos = 0;
-        sma->solicitarCDT(ID);
+        sma->solicitarCDT(ID, posGoal_digital);
     }
 }
 
@@ -227,7 +229,7 @@ void agent::setDireccion(int newDireccion, bool enviarSMA)
 void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
 {
     setDireccion(direccion,true);
-    set_RealP_Based_LogicalP( posGoal, newPos );
+    set_goal(newPos);
 
     //es necesario que esté acá de último para que le de chance de enviar la rotacion.
     sended_NextStep = false;
@@ -235,7 +237,7 @@ void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
 
 bool agent::isAvaliable()
 {
-    if( sended_NextStep )
+    if( sended_NextStep || waitingForCorrection)
         return false;
 
     return true;

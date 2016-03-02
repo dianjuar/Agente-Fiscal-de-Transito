@@ -27,7 +27,7 @@ namespace network
         public slots:
             void enviarVelocidades(int ID, float Vl, float Vr);
             void sendRotation(int ID, int grados);
-            void solicitarCDT(int ID);
+            void solicitarCDT(int ID, sf::Vector2f pos);
         };
     }
 }

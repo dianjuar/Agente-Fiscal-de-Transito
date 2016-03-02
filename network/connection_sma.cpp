@@ -40,7 +40,11 @@ void SMA::sendRotation(int ID, int grados)
            QString::number(ID) + mensajes::divisor_2 + QString::number(grados) +"\n");
 }
 
-void SMA::solicitarCDT(int ID)
+void SMA::solicitarCDT(int ID, sf::Vector2f pos)
 {
-    write( mensajes::MeToSMA_CDT+mensajes::divisor+QString::number(ID) );
+    int x = (int)pos.x;
+    int y = (int)pos.y;
+
+    write( mensajes::MeToSMA_CDT+mensajes::divisor+QString::number(ID)+ mensajes::divisor_2 +
+           QString::number(x) + mensajes::divisor_2 + QString::number(y)+"\n" );
 }

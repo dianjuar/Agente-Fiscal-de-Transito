@@ -54,7 +54,7 @@ public:
     /// \param velocity. Velocidad en cm/s
     ///
     RVO_Manager(agents::agentManager  *aManager,
-                float timeStep = 5.f , float velocity=15.f);
+                float timeStep = 5.f , float velocity=10.f);
 
     void add_obstacles( std::vector<entornoGrafico::obstaculo> listaObst );
 

@@ -28,10 +28,7 @@ class agentManager: public QObject
 
         network::connections::SMA *sma;
         network::connections::ACO *aco;
-
-    std::vector<agent*> agentes;
-    network::connections::SMA *sma;
-    network::connections::ACO *aco;
+        std::vector<agent*> agentes;
 
 public slots:
     void newAgente(int ID, int direccion);

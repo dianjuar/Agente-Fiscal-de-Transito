@@ -41,6 +41,7 @@ class agent: public QObject,
     int Npasos_solicitudCDT;
     bool sended_NextStep;
     bool sended_CRT;
+    bool waitingForCorrection;
 
     float oring;
 
@@ -83,8 +84,9 @@ public:
 
     sf::Vector2f P;
 
-    sf::Vector2f posGoal;
+    sf::Vector2f posGoal_real;
     sf::Vector2f posIni;
+    sf::Vector2f posGoal_digital;
 
     sf::CircleShape p_grap;
     sf::CircleShape destinoShape;
@@ -96,7 +98,7 @@ public:
           int direccionInicial = 0.0f);
 
     void updateLineTrayectoria();
-    void set_goal(sf::Vector2f posGoal );
+    void set_goal(sf::Vector2f posGoal_real );
     sf::Vector2f get_goal();
     RVO::Vector2 get_goal_RVO();
 
