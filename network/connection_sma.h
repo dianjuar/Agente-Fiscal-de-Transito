@@ -23,11 +23,12 @@ namespace network
 
         signals:
             void newAgente(int ID, int direccion);
+            void correccionFinalizada(int ID);
 
         public slots:
             void enviarVelocidades(int ID, float Vl, float Vr);
             void sendRotation(int ID, int grados);
-            void solicitarCDT(int ID, sf::Vector2f pos);
+            void solicitarCDT(int ID, int direccion, sf::Vector2f pos);
         };
     }
 }

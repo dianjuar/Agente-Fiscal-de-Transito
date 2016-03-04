@@ -115,6 +115,8 @@ public:
 
     void newStep(int direccion, float distancia, sf::Vector2f newPos);
 
+    void correccionFinalizada();
+
     bool isAvaliable();
 };
 

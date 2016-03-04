@@ -209,7 +209,7 @@ void agent::solicitar_NewStep()
     {
         waitingForCorrection = true;
         pasos = 0;
-        sma->solicitarCDT(ID, posGoal_digital);
+        sma->solicitarCDT(ID, direccion, posGoal_digital);
     }
 }
 
@@ -233,6 +233,12 @@ void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
 
     //es necesario que esté acá de último para que le de chance de enviar la rotacion.
     sended_NextStep = false;
+}
+
+void agent::correccionFinalizada()
+{
+    sended_NextStep = false;
+    waitingForCorrection = false;
 }
 
 bool agent::isAvaliable()

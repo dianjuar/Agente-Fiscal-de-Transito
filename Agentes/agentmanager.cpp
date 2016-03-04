@@ -9,6 +9,9 @@ agentManager::agentManager(network::connections::SMA *sma, network::connections:
     connect( sma, SIGNAL(newAgente(int,int)),
              this, SLOT(newAgente(int,int)) );
 
+    connect( sma, SIGNAL(correccionFinalizada(int)),
+             this, SLOT(correccionFinalizada(int)) );
+
     connect( aco, SIGNAL(newStep(int,int,float,int,int)),
              this, SLOT(newStep(int,int,float,int,int)) );
 }
@@ -25,6 +28,11 @@ void agentManager::newStep(int ID, int direccion, float distancia, int newPos_X,
     ((agent*)agentes[ID-1])->newStep(direccion,
                                      distancia,
                                      sf::Vector2f(newPos_X,newPos_Y));
+}
+
+void agentManager::correccionFinalizada(int ID)
+{
+    ((agent*)agentes[ID-1])->correccionFinalizada();
 }
 
 void agentManager::addAgent(agent *a)

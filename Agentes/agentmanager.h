@@ -34,6 +34,8 @@ public slots:
     void newAgente(int ID, int direccion);
     void newStep(int ID, int direccion, float distancia,
                  int newPos_X, int newPos_Y);
+    void correccionFinalizada(int ID);
+
 signals:
     void newAgenteAdded();
 
