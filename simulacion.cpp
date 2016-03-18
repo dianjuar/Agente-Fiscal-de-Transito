@@ -21,7 +21,7 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
 
     aManager = new agents::agentManager(sma,aco);
 
-    rvo  = new RVO_Manager(aManager);
+    rvo  = new RVO_Manager(aManager, this);
 
     connect( aManager, SIGNAL(newAgenteAdded()),
              rvo, SLOT(add_UltimoAgente()) );
@@ -84,7 +84,8 @@ void simulacion::update(float deltaTime, float currentTime)
     {
         rvo->updateVisualization();
 
-        float delay = (rvo->sim->getGlobalTime()/100.f)-currentTime;
+        float delay = rvo->getTiempoSimulacion() - currentTime;
+        qDebug()<<rvo->getTiempoSimulacion()<<" -- "<<currentTime;
         QThread::sleep( delay < 0 ? 0:delay );
     }
 }

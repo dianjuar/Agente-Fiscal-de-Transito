@@ -3,8 +3,11 @@
 
 #include "entornografico.h"
 #include "Agentes/agentmanager.h"
+#include "simulacion.h"
 
 //------------prototyping------------
+class simulacion;
+
 namespace agents
 {
     class agent;
@@ -29,6 +32,8 @@ class RVO_Manager: public QObject
     float maxSpeed;
 
     agents::agentManager *aManager;
+    simulacion *REALsim;
+
     void reachedGoal(std::vector<agents::agent *> agentesDisponibles);
 
 signals:
@@ -45,15 +50,16 @@ public:
     ///
     static float TimeStep_real;
 
-    RVO::RVOSimulator *sim;
+    RVO::RVOSimulator *RVOsim;
 
-    ///
-    /// \brief RVO_Manager constructor de la case
-    /// \param agentes. Lista donde se almacenan las agentes.
+    /// \brief RVO_Manager - constructor de la case
+    /// \param aManager. Puntero del Manager de Agentes
+    /// \param REALsim. Punto de la simulacion real
     /// \param timeStep. Tiempo de la simulacion. En centecimas de segundo
     /// \param velocity. Velocidad en cm/s
-    ///
+    //
     RVO_Manager(agents::agentManager  *aManager,
+                simulacion *REALsim,
                 float timeStep = 5.f , float velocity=10.f);
 
     void add_obstacles( std::vector<entornoGrafico::obstaculo> listaObst );
@@ -62,6 +68,12 @@ public:
 
     void updateVisualization();
     void setPreferredVelocities(std::vector<agents::agent *> agentesDisponibles);
+
+    ///
+    /// \brief getTiempoSimulacion - tiempo de la simulacion RVO
+    /// \return tiempo de ejecución de la sumilacion en segundos
+    ///
+    int getTiempoSimulacion();
 };
 
 #endif // RVO_H
