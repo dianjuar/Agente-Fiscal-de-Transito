@@ -217,7 +217,7 @@ void agent::setDireccion(int newDireccion, bool enviarSMA)
 {
     teta = newDireccion*(M_PI/4)-(M_PI/2);
 
-    if(enviarSMA)
+    if(enviarSMA && direccion != newDireccion)
     {
         int grados = ::tools::math::cuantosGradosGiraryHaciaDonde(direccion, newDireccion);
         sma->sendRotation( ID, grados );
