@@ -18,10 +18,10 @@ RVO_Manager::RVO_Manager(agents::agentManager *aManager, simulacion *REALsim,
     TimeStep_real = timeStep*100;
 }
 
-void RVO_Manager::add_obstacles(std::vector<entornoGrafico::obstaculo> listaObst)
+void RVO_Manager::add_obstacles(std::vector<entornoGrafico::c::obstaculo*> listaObst)
 {
-    for(entornoGrafico::obstaculo ob: listaObst)
-        RVOsim->addObstacle( ob.getPoint_RVO() );
+    for(entornoGrafico::c::obstaculo *ob: listaObst)
+        RVOsim->addObstacle( ob->getPoint_RVO() );
 
     RVOsim->processObstacles();
 }
@@ -43,7 +43,7 @@ void RVO_Manager::setVelocidad(float v)
 }
 
 void RVO_Manager::setupScenario(float radius,
-                                std::vector<entornoGrafico::obstaculo> listaObst)
+                                std::vector<entornoGrafico::c::obstaculo *> listaObst)
 {
     this->aManager = aManager;
 

@@ -17,7 +17,10 @@ namespace agents
 namespace entornoGrafico
 {
     class mapa;
-    class obstaculo;
+    namespace c
+    {
+        class obstaculo;
+    }
 }
 //------------prototyping------------
 
@@ -62,9 +65,9 @@ public:
                 simulacion *REALsim,
                 float timeStep = 5.f , float velocity=10.f);
 
-    void add_obstacles( std::vector<entornoGrafico::obstaculo> listaObst );
+    void add_obstacles(std::vector<entornoGrafico::c::obstaculo *> listaObst );
 
-    void setupScenario(float radius, std::vector<entornoGrafico::obstaculo> listaObst);
+    void setupScenario(float radius, std::vector<entornoGrafico::c::obstaculo *> listaObst);
 
     void updateVisualization();
     void setPreferredVelocities(std::vector<agents::agent *> agentesDisponibles);

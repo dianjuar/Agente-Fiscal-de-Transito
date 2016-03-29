@@ -60,7 +60,7 @@ void simulacion::setInformacionGrafica(QString map, float dist)
                                      libreTex, obstTex, inicioTex, llegadaTex  );
 
     rvo->setupScenario( mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),
-                        mapa->obstaculos);
+                        mapa->C_obstaculos);
 
     emit IHaveWhatINeed( waitingDialog::Req_InfEnv );
 
