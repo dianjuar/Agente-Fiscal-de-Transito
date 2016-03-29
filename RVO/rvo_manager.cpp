@@ -65,6 +65,7 @@ void RVO_Manager::updateVisualization()
     std::vector<agents::agent *> agentesDisponibles = aManager->getAgentesDisponibles();
 
     reachedGoal(agentesDisponibles);
+    agentesDisponibles = aManager->getAgentesDisponibles();
 
     for (size_t i = 0; i < agentesDisponibles.size(); ++i)
     {
@@ -89,7 +90,11 @@ void RVO_Manager::reachedGoal(std::vector<agents::agent *> agentesDisponibles)
         agents::agent *a = agentesDisponibles.at(i);
 
         if (RVO::absSq(RVOsim->getAgentPosition( a->ID-1 ) - a->get_goal_RVO()) < 4.0f )
-                a->solicitar_NewStep();
+        {
+            RVOsim->setAgentVelocity( a->ID-1, RVO::Vector2(0,0) );
+            RVOsim->setAgentPrefVelocity(a->ID-1, RVO::Vector2(0,0));
+            a->solicitar_NewStep();
+        }
     }
 }
 
