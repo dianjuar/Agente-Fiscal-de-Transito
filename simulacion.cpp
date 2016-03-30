@@ -37,10 +37,11 @@ void simulacion::OnInit()
     QString dir = QDir::currentPath();
     qDebug()<< "HELLO: " << dir;
 
-    tools::sfml::loadTexture(libreTex, "src/Img/Mapa/libre.png");
-    tools::sfml::loadTexture(obstTex, "src/Img/Mapa/obstaculo.png");
-    tools::sfml::loadTexture(inicioTex, "src/Img/Mapa/inicio.png");
-    tools::sfml::loadTexture(llegadaTex, "src/Img/Mapa/llegada.png");
+    tools::sfml::loadTexture(libreTex,      "src/Img/Mapa/libre.png");
+    tools::sfml::loadTexture(obstTex,       "src/Img/Mapa/obstaculo.png");
+    tools::sfml::loadTexture(inicioTex,     "src/Img/Mapa/inicio.png");
+    tools::sfml::loadTexture(llegadaTex,    "src/Img/Mapa/llegada.png");
+    tools::sfml::loadTexture(libreInalTex,  "src/Img/Mapa/libre-inalcansable.png");
 
     setBackgroudColor(sf::Color::Black);
 
@@ -57,7 +58,7 @@ void simulacion::setInformacionGrafica(QString map, float dist)
     mapa = new entornoGrafico::mapa( map,
                                      map_longitudPorCuadro_REAL,
                                      QSFMLCanvas::size().width(),
-                                     libreTex, obstTex, inicioTex, llegadaTex  );
+                                     libreTex, obstTex, inicioTex, llegadaTex, libreInalTex  );
 
     rvo->setupScenario( mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),
                         mapa->C_obstaculos);

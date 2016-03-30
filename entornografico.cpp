@@ -23,22 +23,84 @@ sf::Vector2f mapa::llegada_Point    = sf::Vector2f(0,0);
 mapa::mapa(QString map_Str,
            float map_longitudPorCuadro_REAL,
            float canvasSize,
-           sf::Texture libreTexture, sf::Texture obstaculoTexture, sf::Texture inicioTexture, sf::Texture llegadaTexture)
+           sf::Texture libreTexture, sf::Texture obstaculoTexture, sf::Texture inicioTexture, sf::Texture llegadaTexture , sf::Texture libreInalTex):
+    libreTexture(libreTexture), obstaculoTexture(obstaculoTexture), inicioTexture(inicioTexture), llegadaTexture(llegadaTexture), libreInalTexture(libreInalTex),
+    map_Str(map_Str)
 {
-    this->map_Str = map_Str;
-    this->map_longitudPorCuadro_REAL = map_longitudPorCuadro_REAL;
-
     nMap = map_Str.split("\n", QString::SkipEmptyParts ).size();
 
-    this->libreTexture = libreTexture;
-    this->obstaculoTexture = obstaculoTexture;
-    this->inicioTexture = inicioTexture;
-    this->llegadaTexture = llegadaTexture;
+    this->map_longitudPorCuadro_REAL = map_longitudPorCuadro_REAL;
 
     setup_scalesAndSizes(canvasSize);
     setup_map();
 
-    distancia_seguraObstaculo = 0;
+
+}
+
+void mapa::setup_secureDistance()
+{
+    if( map_longitudPorCuadro_REAL < agents::agent::getRadioCompleto_real() )
+    {
+        haveCuadrosIncansables = true;
+        distancia_seguraObstaculo = agents::agent::getRadioCompleto_real()/map_longitudPorCuadro_REAL;
+    }
+}
+
+c::cuadro *mapa::build_inalcansableSquare(std::vector<std::vector<int> > matINT, sf::Sprite SP_cuadro, sf::Vector2f SPpoint, int i, int j)
+{
+    for( int x = 1; x <= distancia_seguraObstaculo; x++ )
+    {
+        bool isUnrecheable = false;
+        std::vector<int> neighbors;
+
+        try
+        {
+            int n   = matINT.at(i-1*x).at(j);
+            neighbors.push_back(n);
+
+            int ne  = matINT.at(i-1*x).at(j+1*x);
+            neighbors.push_back(ne);
+
+            int e   = matINT.at(i).at(j+1*x);
+            neighbors.push_back(e);
+
+            int se  = matINT.at(i+1*x).at(j+1*x);
+            neighbors.push_back(se);
+
+            int s   = matINT.at(i+1*x).at(j);
+            neighbors.push_back(s);
+
+            int so  = matINT.at(i+1*x).at(j-1*x);
+            neighbors.push_back(so);
+
+            int o   = matINT.at(i).at(j-1*x);
+            neighbors.push_back(o);
+
+            int no  = matINT.at(i-1*x).at(j-1*x);
+            neighbors.push_back(no);
+        }
+        catch(const std::exception& oor)
+        {
+            isUnrecheable = true;
+            SP_cuadro.setTexture( libreInalTexture );
+            return new c::libreInalcansable( ID_inalcansable, SP_cuadro, SPpoint );
+        }
+
+        foreach (int neighbor, neighbors)
+        {
+            if(neighbor ==  ID_obstaculo )
+                isUnrecheable = true;
+        }
+
+        if(isUnrecheable)
+        {
+            SP_cuadro.setTexture( libreInalTexture );
+            return new c::libreInalcansable( ID_inalcansable, SP_cuadro, SPpoint );
+        }
+    }
+
+    SP_cuadro.setTexture( libreTexture );
+    return new c::libre( ID_libre, SP_cuadro, SPpoint);
 }
 
 float mapa::medidaReal2Pixel(float medidaReal)
@@ -77,16 +139,21 @@ void mapa::setup_scalesAndSizes(float canvasSize)
     spriteScale = spriteSize/spriteSizeOriginal; //regla de 3
 }
 
+
 void mapa::setup_map()
 {
+    setup_secureDistance();
+
+    auto matINT = tools::map::QStringMat2IntMat( map_Str, nMap );
+
+
     for (int i = 0; i < nMap; ++i)
     {
-        QString QStrRow =  map_Str.split("\n", QString::SkipEmptyParts ).at(i);       
         std::vector< c::cuadro* > rowMap_cuadro;
 
         for (int j = 0; j < nMap; ++j)
         {
-            int ID_cuado = QStrRow.at(j).digitValue();
+            int ID_cuado = matINT[i][j];
 
             sf::Sprite SP_cuadro;
             SP_cuadro.setScale( spriteScale,spriteScale );
@@ -102,29 +169,35 @@ void mapa::setup_map()
                 case ID_obstaculo:
                     SP_cuadro.setTexture(obstaculoTexture);
 
-                    cuadro = new c::obstaculo( ID_obstaculo, SP_cuadro, point, spriteSize  );
+                    cuadro = new c::obstaculo( ID_obstaculo, SP_cuadro, point);
                     C_obstaculos.push_back(  dynamic_cast< c::obstaculo* >( cuadro ) );
 
                 break;
 
                 case ID_libre:
-                    SP_cuadro.setTexture(libreTexture);
 
-                    cuadro = new c::obstaculo( ID_libre, SP_cuadro, point, spriteSize  );
+                    if( haveCuadrosIncansables )
+                        cuadro = build_inalcansableSquare( matINT, SP_cuadro ,point, i, j );
+                    else
+                    {
+                        SP_cuadro.setTexture(libreTexture);
+                        cuadro = new c::obstaculo( ID_libre, SP_cuadro, point  );
+                    }
+
                     C_libres.push_back( dynamic_cast< c::libre* >( cuadro ) );
                 break;
 
                 case ID_inicio:
                     SP_cuadro.setTexture(inicioTexture);
 
-                    cuadro = new c::inico( ID_inicio, SP_cuadro, point, spriteSize );
+                    cuadro = new c::inico( ID_inicio, SP_cuadro, point );
                     C_inicio = dynamic_cast< c::inico* >( cuadro );
                 break;
 
                 case ID_fin:
                     SP_cuadro.setTexture(llegadaTexture);
 
-                    cuadro = new c::fin( ID_fin, SP_cuadro, point, spriteSize );
+                    cuadro = new c::fin( ID_fin, SP_cuadro, point );
                     C_fin = dynamic_cast< c::fin* >( cuadro );
                 break;
             }
@@ -163,28 +236,29 @@ c::cuadro::cuadro(int id, sf::Sprite sprt, sf::Vector2f point, float size):
 }
 
 ///////////////////
-c::obstaculo::obstaculo(int id, sf::Sprite sprt, sf::Vector2f point, float size):
-    cuadro(id, sprt,point,size)
+c::obstaculo::obstaculo(int id, sf::Sprite sprt, sf::Vector2f point):
+    cuadro(id, sprt,point)
 {
 }
 
-c::libre::libre(int id, sf::Sprite sprt, sf::Vector2f point, float size):
-    cuadro(id, sprt,point,size)
+c::libre::libre(int id, sf::Sprite sprt, sf::Vector2f point):
+    cuadro(id, sprt,point)
 {
 }
 
-c::libreInalcansable::libreInalcansable(int id, sf::Sprite sprt, sf::Vector2f point, float size):
-    cuadro(id, sprt,point,size)
+c::libreInalcansable::libreInalcansable(int id, sf::Sprite sprt, sf::Vector2f point):
+    libre(id, sprt,point)
+{
+
+}
+
+c::inico::inico(int id, sf::Sprite sprt, sf::Vector2f point):
+    cuadro(id, sprt,point)
 {
 }
 
-c::inico::inico(int id, sf::Sprite sprt, sf::Vector2f point, float size):
-    cuadro(id, sprt,point,size)
-{
-}
-
-c::fin::fin(int id, sf::Sprite sprt, sf::Vector2f point, float size):
-    cuadro(id, sprt,point,size)
+c::fin::fin(int id, sf::Sprite sprt, sf::Vector2f point):
+    cuadro(id, sprt,point)
 {
 }
 

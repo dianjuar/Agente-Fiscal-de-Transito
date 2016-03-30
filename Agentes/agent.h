@@ -56,6 +56,10 @@ signals:
     void solicitarNuevaVelocidad();
 
 public:
+
+    ///
+    /// id's 'cuadro' map
+    ///
     enum
     {
         norte=0,
@@ -68,31 +72,96 @@ public:
         noroeste=7,
     };
 
+    ///
+    /// \brief ID id of the robot
+    ///
     int ID;
+
+    ///
+    /// \brief direccion. Direction of the robot, exm: norte, sur, suroeste.
+    ///
     int direccion;
 
-    static float radius;
-    static float D;
-    static float L;
-    static float wheelRadius;
-    static float zonaSegura;
+    ///
+    /// \brief D_real distance between the center of the robot (p) to the front of the robot. Expresed in centimeters
+    ///
+    static float D_real;
 
+    ///
+    /// \brief L_real distance between the wheels. Expresed in centimeters
+    ///
+    static float L_real;
+
+    ///
+    /// \brief wheelRadius_real radius of the wheel. Expresed in centimeters
+    ///
+    static float wheelRadius_real;
+
+    ///
+    /// \brief radius_real radius of the robot. Expresed in centimeters
+    /// to know the real readius of the robot is necesary add the sage area of the robot.
+    ///
+    static float radius_real;
+
+    ///
+    /// \brief zonaSegura_real safe area of the robot. Expresed in centimeters.
+    /// to know the real readius of the robot is necesary add the radius of the robot.
+    ///
+    static float zonaSegura_real;
+
+    ///
+    /// \brief radius_pixel radius of the robot. Expresed in pixels
+    ///
+    static float radius_pixel;
+
+    ///
+    /// \brief zonaSegura_pixel safe area of the robot. Expresed in pixels.
+    ///
+    static float zonaSegura_pixel;
+
+    ///
+    /// \brief teta orientation of the robot.
+    ///
     float teta;
 
+    ///
+    /// \brief vL_linear, vR_linear. Linear velocites of the robot.
+    /// The left one and the rigith one, in that order.
+    /// Expresed in cm/sec
+    ///
     float vL_linear,vR_linear;
+
+    ///
+    /// \brief vL_angular, vR_angular. Angular velocites of the robot.
+    /// The left one and the rigith one, in that order.
+    /// Expresed in rad/sec
+    ///
     float vL_angular, vR_angular;
 
+
+    ///
+    /// \brief P    position of the efective center of the robot.
+    ///
     sf::Vector2f P;
+    ///
+    /// \brief p_grap.   graphical efective center of the robot.
+    ///
+    sf::CircleShape p_grap;
 
     sf::Vector2f posGoal_real;
     sf::Vector2f posIni;
     sf::Vector2f posGoal_digital;
 
-    sf::CircleShape p_grap;
     sf::CircleShape destinoShape;
     sf::Vertex *lineaDestino;
 
-    //constructor
+    ///
+    /// \brief agent            constructor of the agent
+    /// \param ID.              Id of the agent. Must be unique.
+    /// \param aco.             connection manager with ACO.
+    /// \param sma              connection manager with SMA.
+    /// \param direccionInicial initial direcction of the robot.
+    ///
     agent(int ID,
           network::connections::ACO *aco, network::connections::SMA *sma,
           int direccionInicial = 0.0f);
@@ -104,19 +173,49 @@ public:
 
     void calculateVelocities(RVO::Vector2 position, RVO::Vector2 velocity , float timeStep);
 
-    float getRadioCompleto();
+    ///
+    /// \brief getRadioCompleto_pixel
+    /// \return sumatory of raduis and safe area. Expresed in pixels.
+    ///
+    static float getRadioCompleto_pixel();
 
+    ///
+    /// \brief getRadioCompleto_real
+    /// \return sumatory of raduis and safe area. Expresed in centimeters.
+    ///
+    static float getRadioCompleto_real();
+
+    ///
+    /// \brief calculateP. Calculates the new center of the robot.
+    ///
     void calculateP();
 
-    void draw(::simulacion *m);
-    void update();
+    ///
+    /// \brief draw.    draw the agent.
+    /// \param sim.     the simulation who manager the visual area.
+    ///
+    void draw(::simulacion *sim);
 
+    ///
+    /// \brief solicitar_NewStep. Request a new step to ACO.
+    ///
     void solicitar_NewStep();
 
+    ///
+    /// \brief newStep.     proccess the new step arrives from ACO-
+    /// \param direccion.   the new direcction of the agent.
+    /// \param distancia.   the distance to reach it.
+    /// \param newPos.      the new position of the step. This position is logical.
+    ///
     void newStep(int direccion, float distancia, sf::Vector2f newPos);
 
     void correccionFinalizada();
 
+    ///
+    /// \brief isAvaliable return if the agent is busy or avaliable
+    /// \return true.   if the agent is avaliable
+    ///         false.  if the agent is bussy
+    ///
     bool isAvaliable();
 };
 

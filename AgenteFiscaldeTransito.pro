@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     network/connection_sma.cpp \
     network/connection_aco.cpp \
     simulacion.cpp \
-    waitingdialog.cpp
+    waitingdialog.cpp \
+    Tools/map.cpp
 
 HEADERS  += mainwindow.h \
     qsfmlcanvas.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     network/puertos.h \
     network/mensajes.h \
     simulacion.h \
-    waitingdialog.h
+    waitingdialog.h \
+    Tools/map.h
 
 FORMS    += mainwindow.ui \
     waitingdialog.ui

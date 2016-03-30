@@ -2,12 +2,14 @@
 
 using namespace agents;
 
-float agent::radius = 0;
-float agent::zonaSegura = 0;
+float agent::D_real = 13.5;
+float agent::L_real = 11.35;
+float agent::wheelRadius_real = 2.75;
 
-float agent::D = 0;
-float agent::L = 0;
-float agent::wheelRadius = 0;
+float agent::radius_real        = 13.5f;
+float agent::zonaSegura_real    = 4.0f;
+float agent::radius_pixel       = entornoGrafico::mapa::medidaReal2Pixel( agent::radius_real );
+float agent::zonaSegura_pixel   = entornoGrafico::mapa::medidaReal2Pixel( agent::zonaSegura_real  );
 
 agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *sma,
              int direccionInicial):
@@ -21,13 +23,6 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
                 sended_NextStep(true), sended_CRT(false), waitingForCorrection(false)
 {
     setDireccion(direccionInicial);
-
-    radius = entornoGrafico::mapa::medidaReal2Pixel(13.5f);
-    zonaSegura = entornoGrafico::mapa::medidaReal2Pixel(4.f);
-
-    D = 13.5f;
-    L = 11.35;
-    wheelRadius = 2.75f;
 
     switch (ID)
     {
@@ -52,14 +47,14 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
     set_RealP_Based_LogicalP(posIni, entornoGrafico::mapa::inicio_Point);
 
 
-    setOrigin(radius,radius);
+    setOrigin(radius_pixel,radius_pixel);
     setPosition(this->posIni);
 
-    setRadius(radius);
-    setOutlineThickness(zonaSegura);
+    setRadius(radius_pixel);
+    setOutlineThickness(zonaSegura_pixel);
     setOutlineColor( sf::Color(0,0,255,63) );
 
-    destinoShape.setRadius( radius );
+    destinoShape.setRadius( radius_pixel );
     destinoShape.setFillColor( sf::Color( 0, 255, 0, 20 ) );
 
     posGoal_real = sf::Vector2f(-1,-1);
@@ -88,10 +83,10 @@ void agent::set_goal(sf::Vector2f posGoal)
     destinoShape.setPosition( this->posGoal_real );
 
     lineaDestino = new sf::Vertex[2];
-    lineaDestino[0] = sf::Vertex( sf::Vector2f( posIni.x+radius,
-                                                posIni.y+radius ));
-    lineaDestino[1] = sf::Vertex( sf::Vector2f( this->posGoal_real.x+radius,
-                                                this->posGoal_real.y+radius));
+    lineaDestino[0] = sf::Vertex( sf::Vector2f( posIni.x+radius_pixel,
+                                                posIni.y+radius_pixel ));
+    lineaDestino[1] = sf::Vertex( sf::Vector2f( this->posGoal_real.x+radius_pixel,
+                                                this->posGoal_real.y+radius_pixel));
 }
 
 sf::Vector2f agent::get_goal()
@@ -104,9 +99,14 @@ RVO::Vector2 agent::get_goal_RVO()
     return RVO::Vector2( posGoal_real.x, posGoal_real.y );
 }
 
-float agent::getRadioCompleto()
+float agent::getRadioCompleto_pixel()
 {
-    return radius+zonaSegura;
+    return radius_pixel+zonaSegura_pixel;
+}
+
+float agent::getRadioCompleto_real()
+{
+    return radius_real+radius_real;
 }
 
 void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
@@ -125,7 +125,7 @@ void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
 
 void agent::calculateP()
 {
-    float Dtransformed = entornoGrafico::mapa::medidaReal2Pixel(D);
+    float Dtransformed = entornoGrafico::mapa::medidaReal2Pixel(D_real);
 
     P = sf::Vector2f( getPosition().x + Dtransformed*(cos(teta)),
                       getPosition().y + Dtransformed*(sin(teta)));
@@ -155,7 +155,7 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
     m2.at<float>(1,1) = cos(teta);
     //tools::math::printMat(m2);
 
-    m = 0.5f*m1 + (D/L)*m2;
+    m = 0.5f*m1 + (D_real/L_real)*m2;
 
     v.at<float>(0,0) = entornoGrafico::mapa::pixel2MedidaReal( velocity.x() )*100;
     v.at<float>(1,0) = entornoGrafico::mapa::pixel2MedidaReal( velocity.y() )*100;
@@ -167,8 +167,8 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
     vL_linear = u.at<float>(0,0);
     vR_linear = u.at<float>(1,0);
 
-    vL_angular = (vL_linear/wheelRadius)*(180/M_PI);
-    vR_angular = (vR_linear/wheelRadius)*(180/M_PI);
+    vL_angular = (vL_linear/wheelRadius_real)*(180/M_PI);
+    vR_angular = (vR_linear/wheelRadius_real)*(180/M_PI);
 
     if( ID == 1 || ID == 2 )
         emit velocidadesCalculadas(ID,
@@ -179,7 +179,7 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
 void agent::calculateTeta(RVO::Vector2 velocity,float timeStep)
 {
     float deltaT = timeStep/100;
-    float w = (vR_linear - vL_linear)/L;
+    float w = (vR_linear - vL_linear)/L_real;
 
     teta = teta + w*deltaT;
 }
@@ -190,10 +190,10 @@ void agent::set_RealP_Based_LogicalP(sf::Vector2f &real_P, sf::Vector2f logial_P
                           logial_P.y * entornoGrafico::mapa::spriteSize + oring);
 }
 
-void agent::draw(::simulacion *m)
+void agent::draw(::simulacion *sim)
 {
-    m->RenderWindow::draw(*this);
-    m->RenderWindow::draw( p_grap );
+    sim->RenderWindow::draw(*this);
+    sim->RenderWindow::draw( p_grap );
 }
 
 void agent::solicitar_NewStep()

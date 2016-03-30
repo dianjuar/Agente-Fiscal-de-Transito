@@ -52,7 +52,7 @@ public slots:
     void inicioDeLaSimulacion();
 
 private :
-    sf::Texture libreTex, obstTex, inicioTex, llegadaTex;
+    sf::Texture libreTex, obstTex, inicioTex, llegadaTex, libreInalTex;
 
     network::connections::SMA *sma;
     network::connections::ACO *aco;
