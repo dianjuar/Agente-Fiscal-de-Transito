@@ -115,9 +115,6 @@ namespace entornoGrafico
         static float spriteSize;
         static float spriteSizeOriginal;
 
-        static sf::Vector2f llegada_Point;
-        static sf::Vector2f inicio_Point;
-
         static float map_longitudPorCuadro_REAL;
 
         static float medidaReal2Pixel(float medidaReal);
@@ -142,12 +139,12 @@ namespace entornoGrafico
         {
         public:
             int id;
-            sf::Vector2f point;
+            sf::Vector2f logicalPoint;
             std::vector<sf::Vector2f> aristas;
 
             std::vector< RVO::Vector2 > getPoint_RVO();
 
-            cuadro( int id, sf::Sprite sprt, sf::Vector2f point, float size = entornoGrafico::mapa::spriteSize);
+            cuadro(int id, sf::Sprite sprt, sf::Vector2f logicalPoint, float size = entornoGrafico::mapa::spriteSize);
         };
 
         ///
@@ -156,7 +153,7 @@ namespace entornoGrafico
         class obstaculo: public cuadro
         {
         public:
-            obstaculo(int id, sf::Sprite sprt, sf::Vector2f point);
+           obstaculo(int id, sf::Sprite sprt, sf::Vector2f logicalPoint);
         };
 
         ///
@@ -165,7 +162,7 @@ namespace entornoGrafico
         class libre: public cuadro
         {
         public:
-            libre(int id, sf::Sprite sprt, sf::Vector2f point);
+           libre(int id, sf::Sprite sprt, sf::Vector2f logicalPoint);
         };
 
         ///
@@ -174,7 +171,7 @@ namespace entornoGrafico
         class libreInalcansable: public libre
         {
         public:
-            libreInalcansable(int id, sf::Sprite sprt, sf::Vector2f point);
+           libreInalcansable(int id, sf::Sprite sprt, sf::Vector2f logicalPoint);
         };
 
         ///
@@ -183,7 +180,7 @@ namespace entornoGrafico
         class inico: public cuadro
         {
         public:
-            inico(int id, sf::Sprite sprt, sf::Vector2f point);
+           inico(int id, sf::Sprite sprt, sf::Vector2f logicalPoint);
         };
 
         ///
@@ -192,7 +189,7 @@ namespace entornoGrafico
         class fin: public cuadro
         {
         public:
-            fin(int id, sf::Sprite sprt, sf::Vector2f point);
+           fin(int id, sf::Sprite sprt, sf::Vector2f logicalPoint);
         };
 
     }

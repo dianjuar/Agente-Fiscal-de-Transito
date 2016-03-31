@@ -16,10 +16,6 @@ std::vector< entornoGrafico::c::libre* >                mapa::C_libres;
 c::inico *mapa::C_inicio;
 c::fin   *mapa::C_fin;
 
-
-sf::Vector2f mapa::inicio_Point     = sf::Vector2f(0,0);
-sf::Vector2f mapa::llegada_Point    = sf::Vector2f(0,0);
-
 mapa::mapa(QString map_Str,
            float map_longitudPorCuadro_REAL,
            float canvasSize,
@@ -33,7 +29,6 @@ mapa::mapa(QString map_Str,
 
     setup_scalesAndSizes(canvasSize);
     setup_map();
-
 
 }
 
@@ -159,7 +154,7 @@ void mapa::setup_map()
             SP_cuadro.setScale( spriteScale,spriteScale );
             SP_cuadro.setPosition( j*spriteSize , i*spriteSize );
 
-            sf::Vector2f point =  sf::Vector2f(j*spriteSize,i*spriteSize);
+            sf::Vector2f logicalPoint =  sf::Vector2f(j,i);
 
             c::cuadro *cuadro;
 
@@ -169,7 +164,7 @@ void mapa::setup_map()
                 case ID_obstaculo:
                     SP_cuadro.setTexture(obstaculoTexture);
 
-                    cuadro = new c::obstaculo( ID_obstaculo, SP_cuadro, point);
+                    cuadro = new c::obstaculo( ID_obstaculo, SP_cuadro, logicalPoint);
                     C_obstaculos.push_back(  dynamic_cast< c::obstaculo* >( cuadro ) );
 
                 break;
@@ -177,11 +172,11 @@ void mapa::setup_map()
                 case ID_libre:
 
                     if( haveCuadrosIncansables )
-                        cuadro = build_inalcansableSquare( matINT, SP_cuadro ,point, i, j );
+                        cuadro = build_inalcansableSquare( matINT, SP_cuadro ,logicalPoint, i, j );
                     else
                     {
                         SP_cuadro.setTexture(libreTexture);
-                        cuadro = new c::obstaculo( ID_libre, SP_cuadro, point  );
+                        cuadro = new c::obstaculo( ID_libre, SP_cuadro, logicalPoint  );
                     }
 
                     C_libres.push_back( dynamic_cast< c::libre* >( cuadro ) );
@@ -190,14 +185,14 @@ void mapa::setup_map()
                 case ID_inicio:
                     SP_cuadro.setTexture(inicioTexture);
 
-                    cuadro = new c::inico( ID_inicio, SP_cuadro, point );
+                    cuadro = new c::inico( ID_inicio, SP_cuadro, logicalPoint );
                     C_inicio = dynamic_cast< c::inico* >( cuadro );
                 break;
 
                 case ID_fin:
                     SP_cuadro.setTexture(llegadaTexture);
 
-                    cuadro = new c::fin( ID_fin, SP_cuadro, point );
+                    cuadro = new c::fin( ID_fin, SP_cuadro, logicalPoint );
                     C_fin = dynamic_cast< c::fin* >( cuadro );
                 break;
             }
@@ -220,45 +215,46 @@ std::vector<RVO::Vector2> c::cuadro::getPoint_RVO()
     return pointsRVO;
 }
 
-c::cuadro::cuadro(int id, sf::Sprite sprt, sf::Vector2f point, float size):
+c::cuadro::cuadro(int id, sf::Sprite sprt, sf::Vector2f logicalPoint, float size):
     sf::Sprite( sprt ),
-    point(point),
+    logicalPoint(logicalPoint),
     id(id)
 {
+    sf::Vector2f graphicalPoint( logicalPoint.x*size, logicalPoint.y*size );
     /*
      * Add (polygonal) obstacles, specifying their vertices in counterclockwise
      * order.
      */
-    aristas.push_back( point );
-    aristas.push_back( sf::Vector2f( point.x + size, point.y ) );
-    aristas.push_back( sf::Vector2f( point.x + size, point.y + size) );
-    aristas.push_back( sf::Vector2f( point.x, point.y + size ) );
+    aristas.push_back( graphicalPoint );
+    aristas.push_back( sf::Vector2f( graphicalPoint.x + size, graphicalPoint.y ) );
+    aristas.push_back( sf::Vector2f( graphicalPoint.x + size, graphicalPoint.y + size) );
+    aristas.push_back( sf::Vector2f( graphicalPoint.x, graphicalPoint.y + size ) );
 }
 
 ///////////////////
-c::obstaculo::obstaculo(int id, sf::Sprite sprt, sf::Vector2f point):
-    cuadro(id, sprt,point)
+c::obstaculo::obstaculo(int id, sf::Sprite sprt, sf::Vector2f logicalPoint):
+    cuadro(id, sprt, logicalPoint)
 {
 }
 
-c::libre::libre(int id, sf::Sprite sprt, sf::Vector2f point):
-    cuadro(id, sprt,point)
+c::libre::libre(int id, sf::Sprite sprt, sf::Vector2f logicalPoint):
+    cuadro(id, sprt,logicalPoint)
 {
 }
 
-c::libreInalcansable::libreInalcansable(int id, sf::Sprite sprt, sf::Vector2f point):
-    libre(id, sprt,point)
+c::libreInalcansable::libreInalcansable(int id, sf::Sprite sprt, sf::Vector2f logicalPoint):
+    libre(id, sprt,logicalPoint)
 {
 
 }
 
-c::inico::inico(int id, sf::Sprite sprt, sf::Vector2f point):
-    cuadro(id, sprt,point)
+c::inico::inico(int id, sf::Sprite sprt, sf::Vector2f logicalPoint):
+    cuadro(id, sprt,logicalPoint)
 {
 }
 
-c::fin::fin(int id, sf::Sprite sprt, sf::Vector2f point):
-    cuadro(id, sprt,point)
+c::fin::fin(int id, sf::Sprite sprt, sf::Vector2f logicalPoint):
+    cuadro(id, sprt,logicalPoint)
 {
 }
 

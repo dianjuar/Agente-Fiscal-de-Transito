@@ -8,8 +8,8 @@ float agent::wheelRadius_real = 2.75;
 
 float agent::radius_real        = 13.5f;
 float agent::zonaSegura_real    = 4.0f;
-float agent::radius_pixel       = entornoGrafico::mapa::medidaReal2Pixel( agent::radius_real );
-float agent::zonaSegura_pixel   = entornoGrafico::mapa::medidaReal2Pixel( agent::zonaSegura_real  );
+float agent::radius_pixel       = 0;
+float agent::zonaSegura_pixel   = 0;
 
 agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *sma,
              int direccionInicial):
@@ -22,6 +22,10 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
                 pasos(0), Npasos_solicitudCDT(3),
                 sended_NextStep(true), sended_CRT(false), waitingForCorrection(false)
 {
+    radius_pixel       = entornoGrafico::mapa::medidaReal2Pixel( agent::radius_real );
+    zonaSegura_pixel   = entornoGrafico::mapa::medidaReal2Pixel( agent::zonaSegura_real  );
+
+
     setDireccion(direccionInicial);
 
     switch (ID)
@@ -44,7 +48,7 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
 
     oring = entornoGrafico::mapa::spriteSize/2;
 
-    set_RealP_Based_LogicalP(posIni, entornoGrafico::mapa::inicio_Point);
+    set_RealP_Based_LogicalP(posIni, entornoGrafico::mapa::C_inicio->logicalPoint);
 
 
     setOrigin(radius_pixel,radius_pixel);
@@ -170,7 +174,7 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
     vL_angular = (vL_linear/wheelRadius_real)*(180/M_PI);
     vR_angular = (vR_linear/wheelRadius_real)*(180/M_PI);
 
-    if( ID == 1 || ID == 2 )
+    if( ID == 1 || ID == 2 || ID == 3)
         emit velocidadesCalculadas(ID,
                                    vR_angular,
                                    vL_angular);
