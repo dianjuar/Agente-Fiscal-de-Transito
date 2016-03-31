@@ -86,7 +86,7 @@ void simulacion::update(float deltaTime, float currentTime)
         rvo->updateVisualization();
 
         float delay = rvo->getTiempoSimulacion() - currentTime;
-        qDebug()<<rvo->getTiempoSimulacion()<<" -- "<<currentTime;
+        //qDebug()<<rvo->getTiempoSimulacion()<<" -- "<<currentTime;
         QThread::sleep( delay < 0 ? 0:delay );
     }
 }
