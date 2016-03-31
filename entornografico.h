@@ -123,6 +123,8 @@ namespace entornoGrafico
         static void set_CuadrosInalcalsables(float agentDiameter_REAL);
 
         void drawMapa(simulacion *render );
+
+        static bool isUnreablePosition(sf::Vector2f point);
     };
 
     //******************** CUADROS ************************

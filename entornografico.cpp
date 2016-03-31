@@ -29,7 +29,6 @@ mapa::mapa(QString map_Str,
 
     setup_scalesAndSizes(canvasSize);
     setup_map();
-
 }
 
 void mapa::setup_secureDistance()
@@ -127,6 +126,22 @@ void mapa::drawMapa( simulacion *render )
         }
 }
 
+bool mapa::isUnreablePosition(sf::Vector2f point)
+{
+    foreach (c::libreInalcansable *lin, C_libresIncalcansables)
+    {
+        /*qDebug()<<"Libre I\t\t"<<lin->logicalPoint.x << lin->logicalPoint.y;
+        qDebug()<<"Point \t\t"<<point.x<<point.y;
+        qDebug()<<"---------------------------";*/
+
+        if( lin->logicalPoint.x == point.x &&
+            lin->logicalPoint.y == point.y)
+                return true;
+    }
+
+    return false;
+}
+
 void mapa::setup_scalesAndSizes(float canvasSize)
 {
     this->spriteSizeOriginal = libreTexture.getSize().x;
@@ -171,7 +186,7 @@ void mapa::setup_map()
 
                 case ID_libre:
 
-                    if( haveCuadrosIncansables )
+                    if( haveCuadrosIncansables )                    
                         cuadro = build_inalcansableSquare( matINT, SP_cuadro ,logicalPoint, i, j );
                     else
                     {
@@ -179,7 +194,11 @@ void mapa::setup_map()
                         cuadro = new c::obstaculo( ID_libre, SP_cuadro, logicalPoint  );
                     }
 
-                    C_libres.push_back( dynamic_cast< c::libre* >( cuadro ) );
+                    if( cuadro->id == ID_inalcansable )
+                        C_libresIncalcansables.push_back(  dynamic_cast< c::libreInalcansable* >( cuadro )  );
+                    else
+                        C_libres.push_back( dynamic_cast< c::libre* >( cuadro ) );
+
                 break;
 
                 case ID_inicio:
