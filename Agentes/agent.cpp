@@ -2,7 +2,8 @@
 
 using namespace agents;
 
-float agent::D_real = 13.5;
+//float agent::D_real = 13.5;
+float agent::D_real = 4;
 float agent::L_real = 11.35;
 float agent::wheelRadius_real = 2.75;
 
@@ -20,7 +21,7 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
                 aco(aco),
                 sma(sma),
                 pasos(0), Npasos_solicitudCDT(3),
-                sended_NextStep(true), sended_CRT(false), waitingForCorrection(false)
+                sended_NextStep(true), sended_CRT(false), waitingForCorrection(false), skippedStep(false)
 {
     radius_pixel       = entornoGrafico::mapa::medidaReal2Pixel( agent::radius_real );
     zonaSegura_pixel   = entornoGrafico::mapa::medidaReal2Pixel( agent::zonaSegura_real  );
@@ -232,11 +233,26 @@ void agent::setDireccion(int newDireccion, bool enviarSMA)
 
 void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
 {
-    setDireccion(direccion,true);
-    set_goal(newPos);
+    /*if( entornoGrafico::mapa::isUnreablePosition( newPos ) )
+    {
+        qDebug()<<"la posición x:"<<newPos.x<<"y:"<<newPos.y<<" es inalcansable.";
+        qDebug()<<"Soicitando otra";
+        QThread::sleep(1);
 
-    //es necesario que esté acá de último para que le de chance de enviar la rotacion.
-    sended_NextStep = false;
+        skippedStep = sended_NextStep = true;
+        pasos++;
+        aco->solicitarSiguientePaso(ID);
+    }
+    else*/
+    {
+       // if(skippedStep)
+            setDireccion(direccion,true);
+
+        set_goal(newPos);
+        //es necesario que esté acá de último para que le de chance de enviar la rotacion.
+        skippedStep = false;
+        sended_NextStep = false;
+    }
 }
 
 void agent::correccionFinalizada()

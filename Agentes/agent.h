@@ -43,6 +43,12 @@ class agent: public QObject,
     bool sended_CRT;
     bool waitingForCorrection;
 
+    ///
+    /// \brief skipedStep. This flag will tell if the agent request another
+    /// steps beacuse the first one was unreacheable
+    ///
+    bool skippedStep;
+
     float oring;
 
     void calculateVL(RVO::Vector2 velocity, float timeStep);
@@ -83,7 +89,7 @@ public:
     int direccion;
 
     ///
-    /// \brief D_real distance between the center of the robot (p) to the front of the robot. Expresed in centimeters
+    /// \brief D_real distance between the center of the robot to the front of the robot. Expresed in centimeters
     ///
     static float D_real;
 
