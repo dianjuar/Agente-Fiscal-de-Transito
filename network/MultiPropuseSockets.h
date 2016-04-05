@@ -10,6 +10,8 @@
 #include <QString>
 #include <QDataStream>
 
+#define vervose 0
+
 namespace network
 {
     namespace Base
