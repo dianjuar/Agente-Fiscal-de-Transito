@@ -55,3 +55,8 @@ void ACO::solicitarSiguientePaso(int ID)
           network::mensajes::divisor + QString::number(ID));
 }
 
+void ACO::enviarUnreableSteps()
+{
+
+}
+

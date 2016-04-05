@@ -29,6 +29,8 @@ mapa::mapa(QString map_Str,
 
     setup_scalesAndSizes(canvasSize);
     setup_map();
+
+    emit unrecheableStepsCalculated();
 }
 
 void mapa::setup_secureDistance()

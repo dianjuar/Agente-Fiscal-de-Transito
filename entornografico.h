@@ -31,14 +31,15 @@ namespace entornoGrafico
 
 namespace entornoGrafico
 {
-    class mapa
+    class mapa: public QObject
     {
+        Q_OBJECT
+
         sf::Texture libreTexture,obstaculoTexture,inicioTexture,llegadaTexture, libreInalTexture;
 
         QString map_Str;
         std::vector< std::vector< c::cuadro* > > map;
         int nMap;
-
 
         ///
         /// \brief distancia_seguraObstaculo cuantos cuadros son seguros sin que el agente choque con un obstaculo
@@ -125,6 +126,9 @@ namespace entornoGrafico
         void drawMapa(simulacion *render );
 
         static bool isUnreablePosition(sf::Vector2f point);
+
+    signals:
+        void unrecheableStepsCalculated();
     };
 
     //******************** CUADROS ************************

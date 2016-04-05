@@ -23,6 +23,7 @@ namespace network
 
     public slots:
         void solicitarSiguientePaso(int ID);
+        void enviarUnreableSteps();
 
     signals:
         void llego_datosEntornoGrafico(QString map, float dist);

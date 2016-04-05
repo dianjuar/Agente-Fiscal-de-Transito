@@ -28,6 +28,9 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
 
     connect( aco, SIGNAL(newVelocity(float)),
              rvo, SLOT(setVelocidad(float)) );
+
+    connect( mapa, SIGNAL(unrecheableStepsCalculated()),
+             aco, SLOT(enviarUnreableSteos()) );
 }
 
 void simulacion::OnInit()
