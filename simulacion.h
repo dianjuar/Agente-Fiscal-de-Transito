@@ -43,7 +43,7 @@ public:
 
     int numeroMaximoPath;
 
-    void setInformacionGrafica(QString map, float dist);
+    void setInformacionGrafica();
 
 signals:
     void IHaveWhatINeed(int nReq);
@@ -62,7 +62,6 @@ private :
     agents::agentManager *aManager;
 
     QString map;
-    float dist;
 
     bool fullyLoaded;
 

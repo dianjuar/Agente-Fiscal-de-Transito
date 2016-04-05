@@ -35,11 +35,17 @@ Base::DataReceiver::DataReceiver(QTcpSocket *socket)
 
 void Base::DataReceiver::readyRead()
 {
-    //qDebug()<<"";
-   // qDebug()<<("*********Reading**********");
+    #if vervose
+        qDebug()<<"";
+        qDebug()<<("*********Reading**********");
+    #endif
+
     QString s( socket->readAll() );
-   // qDebug()<<s;
-   // qDebug()<<("********Analizing***********");
+
+    #if vervose
+        qDebug()<<s;
+        qDebug()<<("********Analizing***********");
+    #endif
 
     dataAnalizer(s);
 }
@@ -86,7 +92,9 @@ void Client::disconnected()
 
 void Client::bytesWritten(qint64 bytes)
 {
-    //qDebug()<<"Bytes written"<<bytes;
+    #if vervose
+        qDebug()<<"Bytes written"<<bytes;
+    #endif
 }
 /////////////////////////////////////////////////////////////////////////
 ServerSimple::ServerSimple(QHostAddress adds, int port)
@@ -134,5 +142,7 @@ void ServerSimple::disconnected()
 
 void ServerSimple::bytesWritten(qint64 bytes)
 {
-    //qDebug()<<"Bytes written"<<bytes<<"in"<<socket->localAddress()<<":"<<socket->peerPort();
+    #if vervose
+        qDebug()<<"Bytes written"<<bytes<<"in"<<socket->localAddress()<<":"<<socket->peerPort();
+    #endif
 }
