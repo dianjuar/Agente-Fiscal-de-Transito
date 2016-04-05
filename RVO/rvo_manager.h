@@ -28,11 +28,11 @@ class RVO_Manager: public QObject
 {
     Q_OBJECT
 
-    float maxAgents;
-    float timeHorizon;
-    float timeHorizonObst;
-    float timeStep;
-    float maxSpeed;
+    static float maxAgents;
+    static float timeHorizon;
+    static float timeHorizonObst;
+    static float timeStep;
+    static float maxSpeed;
 
     agents::agentManager *aManager;
     simulacion *REALsim;

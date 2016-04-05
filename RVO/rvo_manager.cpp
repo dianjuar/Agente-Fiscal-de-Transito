@@ -2,14 +2,18 @@
 
 float RVO_Manager::TimeStep_real = 0;
 
+float RVO_Manager::maxAgents        = 3;
+float RVO_Manager::timeHorizon      = 3*500.f;
+float RVO_Manager::timeHorizonObst  = 0.5*500.f;
+
+float RVO_Manager::timeStep         = 5.f;
+float RVO_Manager::maxSpeed         = 0.0f;
+
 //este es el que estoy usando
 RVO_Manager::RVO_Manager(agents::agentManager *aManager, simulacion *REALsim,
                          float timeStep, float velocity):
     aManager(aManager),
-    REALsim(REALsim),
-    maxAgents(1),
-    timeHorizon(5),
-    timeHorizonObst(5)
+    REALsim(REALsim)
 {
     this->timeStep = timeStep;
     maxSpeed = (velocity*2.44)/100.f;
@@ -53,7 +57,7 @@ void RVO_Manager::setupScenario(float radius,
     /* Specify the default parameters for agents that are subsequently added. */
     RVOsim->setAgentDefaults( radius*(750/100),
                            maxAgents,
-                           timeHorizon*300, timeHorizonObst*300,
+                           timeHorizon, timeHorizonObst,
                            radius,
                            maxSpeed);
 
@@ -124,7 +128,6 @@ void RVO_Manager::setPreferredVelocities(std::vector<agents::agent *> agentesDis
         RVOsim->setAgentPrefVelocity( a->ID-1 , RVOsim->getAgentPrefVelocity(a->ID-1) +
                                   dist * RVO::Vector2(std::cos(angle), std::sin(angle)));
     }
-
 }
 
 int RVO_Manager::getTiempoSimulacion()
