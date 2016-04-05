@@ -13,9 +13,8 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
     sma(sma),
     aco(aco),
     map(map),
-    dist(dist)
+    map_longitudPorCuadro_REAL(dist)
 {
-    map_longitudPorCuadro_REAL = 21.023796f;
     radioReal = 13.5f;
     zonaSeguraReal = 4.f;
 
@@ -48,13 +47,11 @@ void simulacion::OnInit()
     radioScaled = mapa->medidaReal2Pixel(radioReal);
     zonaSeguraScaled = mapa->medidaReal2Pixel(zonaSeguraReal);
 
-    setInformacionGrafica(map,dist);
+    setInformacionGrafica();
 }
 
-void simulacion::setInformacionGrafica(QString map, float dist)
+void simulacion::setInformacionGrafica()
 {
-    map_longitudPorCuadro_REAL = dist;
-
     mapa = new entornoGrafico::mapa( map,
                                      map_longitudPorCuadro_REAL,
                                      QSFMLCanvas::size().width(),
