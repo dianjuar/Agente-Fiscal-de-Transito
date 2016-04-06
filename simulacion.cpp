@@ -26,10 +26,7 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
              rvo, SLOT(add_UltimoAgente()) );
 
     connect( aco, SIGNAL(newVelocity(float)),
-             rvo, SLOT(setVelocidad(float)) );
-
-    connect( mapa, SIGNAL(unrecheableStepsCalculated()),
-             aco, SLOT(enviarUnreableSteos()) );
+             rvo, SLOT(setVelocidad(float)) );   
 }
 
 void simulacion::OnInit()
@@ -51,6 +48,7 @@ void simulacion::OnInit()
     zonaSeguraScaled = mapa->medidaReal2Pixel(zonaSeguraReal);
 
     setInformacionGrafica();
+
 }
 
 void simulacion::setInformacionGrafica()
@@ -59,6 +57,13 @@ void simulacion::setInformacionGrafica()
                                      map_longitudPorCuadro_REAL,
                                      QSFMLCanvas::size().width(),
                                      libreTex, obstTex, inicioTex, llegadaTex, libreInalTex  );
+
+    connect( mapa, SIGNAL(unrecheableStepsCalculated()),
+             aco, SLOT(enviarUnreableSteps()) );
+
+    if( mapa->haveCuadrosIncansables )
+        emit mapa->unrecheableStepsCalculated();
+
 
     rvo->setupScenario( mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),
                         mapa->C_obstaculos);
