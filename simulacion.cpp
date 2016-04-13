@@ -61,8 +61,7 @@ void simulacion::setInformacionGrafica()
     connect( mapa, SIGNAL(unrecheableStepsCalculated()),
              aco, SLOT(enviarUnreableSteps()) );
 
-    if( mapa->haveCuadrosIncansables )
-        emit mapa->unrecheableStepsCalculated();
+    emit mapa->unrecheableStepsCalculated();
 
 
     rvo->setupScenario( mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),

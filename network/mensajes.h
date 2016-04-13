@@ -33,6 +33,7 @@ namespace network
         //Mensaje to ACO
         const QString MeToACO_SiguientePaso = "nextS";
         const QString MeToACO_UnrecheableSteps = "unrSteps";
+        const QString MeToACO_NONEUnrecheableSteps = "NONEunrSteps";
     }
 }
 
