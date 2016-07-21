@@ -63,11 +63,11 @@ public:
     //
     RVO_Manager(agents::agentManager  *aManager,
                 simulacion *REALsim,
-                float timeStep = 5.f , float velocity=10.f);
+                float timeStep = 5.f , float velocity=5.f);
 
     void add_obstacles(std::vector<entornoGrafico::c::obstaculo *> listaObst );
 
-    void setupScenario(float radius, std::vector<entornoGrafico::c::obstaculo *> listaObst);
+    void setupScenario(std::vector<entornoGrafico::c::obstaculo *> listaObst);
 
     void updateVisualization();
     void setPreferredVelocities(std::vector<agents::agent *> agentesDisponibles);

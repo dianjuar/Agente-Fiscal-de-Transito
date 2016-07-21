@@ -3,11 +3,18 @@
 float RVO_Manager::TimeStep_real = 0;
 
 float RVO_Manager::maxAgents        = 3;
-float RVO_Manager::timeHorizon      = 3*500.f;
-float RVO_Manager::timeHorizonObst  = 0.5*500.f;
+
+//float RVO_Manager::timeHorizon      = 500.0f;
+//float RVO_Manager::timeHorizonObst  = 500.0f;
+
+float RVO_Manager::timeHorizon = 500*agents::agent::radius_real/7.0f;
+float RVO_Manager::timeHorizonObst = RVO_Manager::timeHorizon;
+
 
 float RVO_Manager::timeStep         = 5.f;
 float RVO_Manager::maxSpeed         = 0.0f;
+
+using namespace agents;
 
 //este es el que estoy usando
 RVO_Manager::RVO_Manager(agents::agentManager *aManager, simulacion *REALsim,
@@ -46,8 +53,7 @@ void RVO_Manager::setVelocidad(float v)
         RVOsim->setAgentMaxSpeed(i, (v*2.44)/100.f);
 }
 
-void RVO_Manager::setupScenario(float radius,
-                                std::vector<entornoGrafico::c::obstaculo *> listaObst)
+void RVO_Manager::setupScenario(std::vector<entornoGrafico::c::obstaculo *> listaObst)
 {
     this->aManager = aManager;
 
@@ -55,21 +61,32 @@ void RVO_Manager::setupScenario(float radius,
     RVOsim->setTimeStep(timeStep);
 
     /* Specify the default parameters for agents that are subsequently added. */
-    RVOsim->setAgentDefaults( radius*(750/100),
+    /*RVOsim->setAgentDefaults( radius*(750/100),
                            maxAgents,
                            timeHorizon, timeHorizonObst,
                            radius,
-                           maxSpeed);
+                           maxSpeed);*/
+
+    //RVOsim->setAgentDefaults(15.0f, 10, 5.0f, 5.0f, 2.0f, 2.0f);
+
+
+    float radio = agent::radius_pixel + agent::zonaSegura_pixel;
+    RVOsim->setAgentDefaults( 30.0f*(radio),
+                              maxAgents,
+                              timeHorizon, timeHorizonObst,
+                              radio,
+                              maxSpeed);
 
     add_obstacles(listaObst);
 }
 
 void RVO_Manager::updateVisualization()
 {
-    std::vector<agents::agent *> agentesDisponibles = aManager->getAgentesDisponibles();
+    //std::vector<agents::agent *> agentesDisponibles = aManager->getAgentesDisponibles();
+    std::vector<agents::agent *> agentesDisponibles = aManager->getAgentes();
 
     reachedGoal(agentesDisponibles);
-    agentesDisponibles = aManager->getAgentesDisponibles();
+    //agentesDisponibles = aManager->getAgentesDisponibles();
 
     for (size_t i = 0; i < agentesDisponibles.size(); ++i)
     {
@@ -112,6 +129,13 @@ void RVO_Manager::setPreferredVelocities(std::vector<agents::agent *> agentesDis
 
         if(goal == RVO::Vector2(-1,-1) )
             continue;
+
+        //si no está disponible quedarse super quieto
+        /*if( !a->isAvaliable() )
+        {
+            RVOsim->setAgentPrefVelocity( a->ID-1 , RVO::Vector2(0,0) );
+            continue;
+        }*/
 
         RVO::Vector2 goalVector = goal - RVOsim->getAgentPosition( a->ID-1 );
 

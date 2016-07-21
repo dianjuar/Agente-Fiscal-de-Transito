@@ -51,9 +51,14 @@ class agent: public QObject,
 
     void setDireccion(int newDireccion, bool enviarSMA = false);
 
+    ///
+    /// \brief set the goal of the agent as the point that he being.
+    /// Donde el está parado. Su destino es estar donde está actualmente.
+    ///
+    void set_imWaiting();
+
 signals:
     void velocidadesCalculadas(int ID, float VL, float VR);
-    void solicitarNuevaVelocidad();
 
 public:
 
@@ -148,8 +153,17 @@ public:
     ///
     sf::CircleShape p_grap;
 
-    sf::Vector2f posGoal_real;
+    ///
+    /// \brief posGoal_real. Punto del goal del agente expresado en pixeles. ( 1*500,2*500 ) Significa que desea estar en
+    /// la posición 1,2 pero se hacen sus respectivos calculos a pixeles.
+    ///
+    sf::Vector2f posGoal_realpixel;
+
     sf::Vector2f posIni;
+
+    ///
+    /// \brief posGoal_digital. Punto digital del goal en la matriz. (1,2) Significa que desea estar en el posición 1,2.
+    ///
     sf::Vector2f posGoal_digital;
 
     sf::CircleShape destinoShape;
@@ -167,8 +181,8 @@ public:
           int direccionInicial = 0.0f);
 
     void updateLineTrayectoria();
-    void set_goal(sf::Vector2f posGoal_real );
-    sf::Vector2f get_goal();
+    void set_goal(sf::Vector2f posGoal_realpixel );
+    sf::Vector2f get_goal_realpixel();
     RVO::Vector2 get_goal_RVO();
 
     void calculateVelocities(RVO::Vector2 position, RVO::Vector2 velocity , float timeStep);
@@ -183,7 +197,7 @@ public:
     /// \brief getRadioCompleto_real
     /// \return sumatory of raduis and safe area. Expresed in centimeters.
     ///
-    static float getRadioCompleto_real();
+    static float getDiametroCompleto_real_plus_distanciaSegura();
 
     ///
     /// \brief calculateP. Calculates the new center of the robot.

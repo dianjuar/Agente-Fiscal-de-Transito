@@ -61,6 +61,11 @@ namespace entornoGrafico
         ///
         c::cuadro *build_inalcansableSquare(std::vector< std::vector<int> > matINT, sf::Sprite SP_cuadro, sf::Vector2f SPpoint, int i, int j);
 
+        ///
+        /// \brief Calcula las variables staticas de los agentes, sus medidas en pixeles.
+        ///
+        void set_AgentDefaults();
+
     public:
 
 

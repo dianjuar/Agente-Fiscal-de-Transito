@@ -15,9 +15,6 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
     map(map),
     map_longitudPorCuadro_REAL(dist)
 {
-    radioReal = 13.5f;
-    zonaSeguraReal = 4.f;
-
     aManager = new agents::agentManager(sma,aco);
 
     rvo  = new RVO_Manager(aManager, this);
@@ -44,11 +41,7 @@ void simulacion::OnInit()
 
     setBackgroudColor(sf::Color::Black);
 
-    radioScaled = mapa->medidaReal2Pixel(radioReal);
-    zonaSeguraScaled = mapa->medidaReal2Pixel(zonaSeguraReal);
-
     setInformacionGrafica();
-
 }
 
 void simulacion::setInformacionGrafica()
@@ -64,7 +57,7 @@ void simulacion::setInformacionGrafica()
     emit mapa->unrecheableStepsCalculated();
 
 
-    rvo->setupScenario( mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),
+    rvo->setupScenario( //mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),
                         mapa->C_obstaculos);
 
     emit IHaveWhatINeed( waitingDialog::Req_InfEnv );

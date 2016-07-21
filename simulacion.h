@@ -66,8 +66,6 @@ private :
     bool fullyLoaded;
 
     float map_longitudPorCuadro_REAL;
-    float radioReal, radioScaled;
-    float zonaSeguraReal, zonaSeguraScaled;
 
     float tiempoTranscurrido;
 
