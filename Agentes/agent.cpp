@@ -2,13 +2,19 @@
 
 using namespace agents;
 
-//float agent::D_real = 13.5;
-float agent::D_real = 4;
-float agent::L_real = 11.35;
+/*float agent::radius_real  = 13.5f;
+float agent::D_real = agent::radius_real;
+float agent::L_real = 11.35f;*/
+
+float agent::radius_real  = 7.0f;
+float agent::D_real = agent::radius_real;
+float agent::L_real = 5.88519f;
+
+
+
 float agent::wheelRadius_real = 2.75;
 
-float agent::radius_real        = 13.5f;
-float agent::zonaSegura_real    = 4.0f;
+float agent::zonaSegura_real    = 1.0f;
 float agent::radius_pixel       = 0;
 float agent::zonaSegura_pixel   = 0;
 
@@ -20,8 +26,8 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
                 vL_linear(0), vR_linear(0),
                 aco(aco),
                 sma(sma),
-                pasos(0), Npasos_solicitudCDT(3),
-                sended_NextStep(true), sended_CRT(false), waitingForCorrection(false), skippedStep(false)
+                pasos(0), Npasos_solicitudCDT(6),
+                sended_NextStep(true), sended_CRT(false), waitingForCorrection(false)
 {
     radius_pixel       = entornoGrafico::mapa::medidaReal2Pixel( agent::radius_real );
     zonaSegura_pixel   = entornoGrafico::mapa::medidaReal2Pixel( agent::zonaSegura_real  );
@@ -62,8 +68,8 @@ agent::agent(int ID, network::connections::ACO *aco, network::connections::SMA *
     destinoShape.setRadius( radius_pixel );
     destinoShape.setFillColor( sf::Color( 0, 255, 0, 20 ) );
 
-    posGoal_real = sf::Vector2f(-1,-1);
-    set_goal( posGoal_real );
+    posGoal_realpixel = sf::Vector2f(-1,-1);
+    set_goal( posGoal_realpixel );
 
     calculateP();
     p_grap.setRadius(4);
@@ -82,26 +88,26 @@ void agent::updateLineTrayectoria()
 void agent::set_goal(sf::Vector2f posGoal)
 {
     this->posGoal_digital = posGoal;
-    this->posGoal_real = sf::Vector2f(posGoal.x*entornoGrafico::mapa::spriteSize + oring,
+    this->posGoal_realpixel = sf::Vector2f(posGoal.x*entornoGrafico::mapa::spriteSize + oring,
                                  posGoal.y*entornoGrafico::mapa::spriteSize + oring);
 
-    destinoShape.setPosition( this->posGoal_real );
+    destinoShape.setPosition( this->posGoal_realpixel );
 
     lineaDestino = new sf::Vertex[2];
     lineaDestino[0] = sf::Vertex( sf::Vector2f( posIni.x+radius_pixel,
                                                 posIni.y+radius_pixel ));
-    lineaDestino[1] = sf::Vertex( sf::Vector2f( this->posGoal_real.x+radius_pixel,
-                                                this->posGoal_real.y+radius_pixel));
+    lineaDestino[1] = sf::Vertex( sf::Vector2f( this->posGoal_realpixel.x+radius_pixel,
+                                                this->posGoal_realpixel.y+radius_pixel));
 }
 
-sf::Vector2f agent::get_goal()
+sf::Vector2f agent::get_goal_realpixel()
 {
-    return posGoal_real;
+    return posGoal_realpixel;
 }
 
 RVO::Vector2 agent::get_goal_RVO()
 {
-    return RVO::Vector2( posGoal_real.x, posGoal_real.y );
+    return RVO::Vector2( posGoal_realpixel.x, posGoal_realpixel.y );
 }
 
 float agent::getRadioCompleto_pixel()
@@ -109,15 +115,15 @@ float agent::getRadioCompleto_pixel()
     return radius_pixel+zonaSegura_pixel;
 }
 
-float agent::getRadioCompleto_real()
+float agent::getDiametroCompleto_real_plus_distanciaSegura()
 {
-    return radius_real+radius_real;
+    return (radius_real+zonaSegura_real)*2;
 }
 
 void agent::calculateVelocities(RVO::Vector2 position,RVO::Vector2 velocity,
                                 float timeStep)
 { 
-    if( posGoal_real == sf::Vector2f(-1,-1) )
+    if( posGoal_realpixel == sf::Vector2f(-1,-1) )
         return;
 
     calculateVL(velocity, timeStep);
@@ -175,7 +181,8 @@ void agent::calculateVL(RVO::Vector2 velocity, float timeStep)
     vL_angular = (vL_linear/wheelRadius_real)*(180/M_PI);
     vR_angular = (vR_linear/wheelRadius_real)*(180/M_PI);
 
-    if( ID == 1 || ID == 2 || ID == 3)
+    //si está disponible enviar velocidaddes.
+    if( isAvaliable() )
         emit velocidadesCalculadas(ID,
                                    vR_angular,
                                    vL_angular);
@@ -203,6 +210,10 @@ void agent::draw(::simulacion *sim)
 
 void agent::solicitar_NewStep()
 {
+    if(sended_NextStep)
+        return;
+    if(waitingForCorrection)
+        return;
 
     if(pasos < Npasos_solicitudCDT && !sended_NextStep)
     {
@@ -231,6 +242,11 @@ void agent::setDireccion(int newDireccion, bool enviarSMA)
     direccion = newDireccion;
 }
 
+void agent::set_imWaiting()
+{
+
+}
+
 void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
 {
     /*if( entornoGrafico::mapa::isUnreablePosition( newPos ) )
@@ -244,15 +260,18 @@ void agent::newStep(int direccion, float distancia, sf::Vector2f newPos)
         aco->solicitarSiguientePaso(ID);
     }
     else*/
-    {
+    //{
        // if(skippedStep)
-            setDireccion(direccion,true);
+            //setDireccion(direccion,true);
 
-        set_goal(newPos);
+        //set_goal(newPos);
         //es necesario que esté acá de último para que le de chance de enviar la rotacion.
-        skippedStep = false;
-        sended_NextStep = false;
-    }
+        //sended_NextStep = false;
+    //}
+
+    setDireccion(direccion,true);
+    set_goal(newPos);
+    sended_NextStep = false;
 }
 
 void agent::correccionFinalizada()

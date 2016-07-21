@@ -10,6 +10,7 @@ namespace network
         //Mensajes Standar
         const QString divisor =   "->";
         const QString divisor_2 = "_";
+        const QString divisor_3 = "#";
         const QString cerrar =    "close";
         const QString conectado = "connect";
 
@@ -31,6 +32,8 @@ namespace network
 
         //Mensaje to ACO
         const QString MeToACO_SiguientePaso = "nextS";
+        const QString MeToACO_UnrecheableSteps = "unrSteps";
+        const QString MeToACO_NONEUnrecheableSteps = "NONEunrSteps";
     }
 }
 

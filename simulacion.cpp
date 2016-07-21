@@ -15,9 +15,6 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
     map(map),
     map_longitudPorCuadro_REAL(dist)
 {
-    radioReal = 13.5f;
-    zonaSeguraReal = 4.f;
-
     aManager = new agents::agentManager(sma,aco);
 
     rvo  = new RVO_Manager(aManager, this);
@@ -26,7 +23,7 @@ simulacion::simulacion(QWidget* Parent, const QPoint& Position, const QSize& Siz
              rvo, SLOT(add_UltimoAgente()) );
 
     connect( aco, SIGNAL(newVelocity(float)),
-             rvo, SLOT(setVelocidad(float)) );
+             rvo, SLOT(setVelocidad(float)) );   
 }
 
 void simulacion::OnInit()
@@ -44,9 +41,6 @@ void simulacion::OnInit()
 
     setBackgroudColor(sf::Color::Black);
 
-    radioScaled = mapa->medidaReal2Pixel(radioReal);
-    zonaSeguraScaled = mapa->medidaReal2Pixel(zonaSeguraReal);
-
     setInformacionGrafica();
 }
 
@@ -57,7 +51,13 @@ void simulacion::setInformacionGrafica()
                                      QSFMLCanvas::size().width(),
                                      libreTex, obstTex, inicioTex, llegadaTex, libreInalTex  );
 
-    rvo->setupScenario( mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),
+    connect( mapa, SIGNAL(unrecheableStepsCalculated()),
+             aco, SLOT(enviarUnreableSteps()) );
+
+    emit mapa->unrecheableStepsCalculated();
+
+
+    rvo->setupScenario( //mapa->medidaReal2Pixel(radioReal+zonaSeguraReal),
                         mapa->C_obstaculos);
 
     emit IHaveWhatINeed( waitingDialog::Req_InfEnv );

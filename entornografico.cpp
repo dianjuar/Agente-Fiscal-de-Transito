@@ -33,10 +33,10 @@ mapa::mapa(QString map_Str,
 
 void mapa::setup_secureDistance()
 {
-    if( map_longitudPorCuadro_REAL < agents::agent::getRadioCompleto_real() )
+    if( map_longitudPorCuadro_REAL < agents::agent::getDiametroCompleto_real_plus_distanciaSegura() )
     {
         haveCuadrosIncansables = true;
-        distancia_seguraObstaculo = agents::agent::getRadioCompleto_real()/map_longitudPorCuadro_REAL;
+        distancia_seguraObstaculo = agents::agent::getDiametroCompleto_real_plus_distanciaSegura()/map_longitudPorCuadro_REAL;
     }
 }
 
@@ -95,6 +95,12 @@ c::cuadro *mapa::build_inalcansableSquare(std::vector<std::vector<int> > matINT,
 
     SP_cuadro.setTexture( libreTexture );
     return new c::libre( ID_libre, SP_cuadro, SPpoint);
+}
+
+void mapa::set_AgentDefaults()
+{
+    agents::agent::radius_pixel     = medidaReal2Pixel( agents::agent::radius_real );
+    agents::agent::zonaSegura_pixel = medidaReal2Pixel( agents::agent::zonaSegura_real );
 }
 
 float mapa::medidaReal2Pixel(float medidaReal)
@@ -221,6 +227,8 @@ void mapa::setup_map()
 
         map.push_back(rowMap_cuadro);
     }
+
+    set_AgentDefaults();
 }
 
 //////////////////////////////////////////////////////////

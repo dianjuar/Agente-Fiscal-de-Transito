@@ -55,3 +55,30 @@ void ACO::solicitarSiguientePaso(int ID)
           network::mensajes::divisor + QString::number(ID));
 }
 
+void ACO::enviarUnreableSteps()
+{
+    QString sms = mensajes::MeToACO_UnrecheableSteps + mensajes::divisor;
+
+    //hay cuadros
+    if( entornoGrafico::mapa::C_libresIncalcansables.size() != 0 )
+    {
+        for (int i = 0; i < entornoGrafico::mapa::C_libresIncalcansables.size(); ++i)
+        {
+            entornoGrafico::c::libreInalcansable *cI = entornoGrafico::mapa::C_libresIncalcansables.at(i);
+
+            sms.append( QString::number(cI->logicalPoint.x) + mensajes::divisor_3 +
+                        QString::number(cI->logicalPoint.y) );
+
+            if( i != entornoGrafico::mapa::C_libresIncalcansables.size() -1 )
+                sms.append( mensajes::divisor_2 );
+        }
+    }
+    //no hay nada
+    else
+        sms.append( mensajes::MeToACO_NONEUnrecheableSteps );
+
+
+    write(sms);
+}
+
+

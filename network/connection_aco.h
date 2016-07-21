@@ -5,6 +5,7 @@
 #include "network/puertos.h"
 #include "network/mensajes.h"
 #include "headers/sfml_stuff.h"
+#include "entornografico.h"
 
 namespace network
 {
@@ -23,6 +24,7 @@ namespace network
 
     public slots:
         void solicitarSiguientePaso(int ID);
+        void enviarUnreableSteps();
 
     signals:
         void llego_datosEntornoGrafico(QString map, float dist);

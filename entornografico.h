@@ -31,24 +31,15 @@ namespace entornoGrafico
 
 namespace entornoGrafico
 {
-    class mapa
+    class mapa: public QObject
     {
+        Q_OBJECT
+
         sf::Texture libreTexture,obstaculoTexture,inicioTexture,llegadaTexture, libreInalTexture;
 
         QString map_Str;
         std::vector< std::vector< c::cuadro* > > map;
         int nMap;
-
-
-        ///
-        /// \brief distancia_seguraObstaculo cuantos cuadros son seguros sin que el agente choque con un obstaculo
-        ///
-        static int distancia_seguraObstaculo;
-
-        ///
-        /// \brief haveCuadrosIncansables indica si es necesario verificar si un agente cabe dentro de un cuadro
-        ///
-        static bool haveCuadrosIncansables;
 
         void setup_map();
         void setup_scalesAndSizes(float canvasSize);
@@ -70,7 +61,23 @@ namespace entornoGrafico
         ///
         c::cuadro *build_inalcansableSquare(std::vector< std::vector<int> > matINT, sf::Sprite SP_cuadro, sf::Vector2f SPpoint, int i, int j);
 
+        ///
+        /// \brief Calcula las variables staticas de los agentes, sus medidas en pixeles.
+        ///
+        void set_AgentDefaults();
+
     public:
+
+
+        ///
+        /// \brief distancia_seguraObstaculo cuantos cuadros son seguros sin que el agente choque con un obstaculo
+        ///
+        static int distancia_seguraObstaculo;
+
+        ///
+        /// \brief haveCuadrosIncansables indica si es necesario verificar si un agente cabe dentro de un cuadro
+        ///
+        static bool haveCuadrosIncansables;
 
         ///
         /// \brief The ID_cuadros enum. ID's of the squares' map
@@ -125,6 +132,9 @@ namespace entornoGrafico
         void drawMapa(simulacion *render );
 
         static bool isUnreablePosition(sf::Vector2f point);
+
+    signals:
+        void unrecheableStepsCalculated();
     };
 
     //******************** CUADROS ************************
